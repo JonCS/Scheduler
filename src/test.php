@@ -34,10 +34,13 @@ if (isset($_POST['submitted'])) {
 	<input type="text" name = "date_1"> <br>
 	<br>
 	Assignment type <br>
-	<input type = "radio" name = "assignment_number" value = "1"> Reading <br>
-	<input type = "radio" name = "assignment_number" value = "2"> 1 <br>
-	<input type = "radio" name = "assignment_number" value = "3"> 2 <br>
-	<input type = "radio" name = "assignment_number" value = "4"> 3 <br>
+	<input type = "radio" name = "assignment_number" value = "Reading"> Reading <br>
+	<input type = "radio" name = "assignment_number" value = "Initial Visit"> Initial Visit <br>
+	<input type = "radio" name = "assignment_number" value = "RV1"> RV1 <br>
+	<input type = "radio" name = "assignment_number" value = "RV2"> RV2 <br>
+	<input type = "radio" name = "assignment_number" value = "RV3"> RV3 <br>
+	<input type = "radio" name = "assignment_number" value = "Study"> Study <br>
+	<input type = "radio" name = "assignment_number" value = "Talk"> Talk <br>
 	<br>
 	Assignment name <br>
 	<input type= "text" name = "assignment_name"> <br>
@@ -69,35 +72,42 @@ if (isset($_POST['submitted'])) {
 <a href="access.php" target="_blank">All assignments</a>
 
 <br>
-<br>
 
 <?php
 
-$list_names = "SELECT DISTINCT name_1, name_2 FROM projecttable";
+$list_names = "SELECT DISTINCT name_1 FROM projecttable";
 $result_list = $conn->query($list_names);
 $array_names = array();
-echo "Students";
-	if ($result_list->num_rows > 0) {
-		echo "<table style='border: 1px solid black;' cellspacing=0 cellpadding=15>";
-		echo "<tr>";
-		while ($row = $result_list -> fetch_assoc()){
-			echo "<td>" . " " . $row["name_1"] . "</td>";
-			$arraynames[]= $row["name_1"];
-			$arraycount = count($arraynames) ;
-			$y = 0;
-			for ($x = 0; $x < $arraycount; $x++){
-				$arraycount = count($arraynames) ;
-				if($arraynames[$x] != $row["name_2"]){
-					$y++;
-				}
-				if($y == $arraycount && $row["name_2"] != NULL){
-					echo "<td>" . " " . $row["name_2"] . "</td>";
-				}
-			}
-
+if ($result_list->num_rows > 0) {
+	while ($row = $result_list -> fetch_assoc()){
+			array_push($array_names, $row["name_1"]);
 		}
-		echo "</tr>";
-		echo "</table>";
+}
+$x = 0;
+$temp = array();
+$name_and_date = array();
+if (count($array_names) > 0){
+	while ($x < count($array_names)){
+		$most_recent = "SELECT date_1 FROM projecttable WHERE name_1 = '$array_names[$x]' ORDER BY date_1 DESC LIMIT 1";
+		$result = $conn->query($most_recent);
+		$result_var =mysqli_fetch_assoc ($result);
+		$temp = array($array_names[$x], $result_var['date_1']);
+		array_push($name_and_date, $temp);
+		$x ++;
+	}
+}
+//var_dump($name_and_date);
+
+date_default_timezone_set('America/Los_Angeles');
+$date = new DateTime(date('Y/m/d', time()));
+//var_dump($date);
+
+for ($y = 0; $y < count($name_and_date); $y++) {
+	echo "<br>" . $name_and_date[$y][0];
+	$temp_date = new DateTime ($name_and_date[$y][1]);
+	$interval = $date->diff($temp_date);
+	echo "<br>" . $interval->format('%R%a days');
+
 }
 
 ?>
