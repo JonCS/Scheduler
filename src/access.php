@@ -14,7 +14,8 @@ include "connect.php";
 		while ($row = $result -> fetch_assoc()){
 			if($row["name_2"] != NULL){
 				$var_name_2 = " and " . $row["name_2"];
-			}else{
+			} else
+			{
 				$var_name_2 = " ";
 			}
 			echo "<tr>";
