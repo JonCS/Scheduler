@@ -9,8 +9,8 @@ if (isset($_POST['submitted'])) {
 	$assignment_name = $_POST['assignment_name'];
 	$name_1 = $_POST['name_1'];
 	$name_2 = $_POST['name_2'];
-	$point_1 = $_POST['point_1']; 
-	$sqlinsert = "INSERT INTO projecttable (date_1, assignment_number, assignment_name, name_1, name_2, point_1) 
+	$point_1 = $_POST['point_1'];
+	$sqlinsert = "INSERT INTO projecttable (date_1, assignment_number, assignment_name, name_1, name_2, point_1)
 	VALUES ('$date_1', '$assignment_number', '$assignment_name', '$name_1', '$name_2', '$point_1');";
 	$conn->multi_query($sqlinsert);
 }
