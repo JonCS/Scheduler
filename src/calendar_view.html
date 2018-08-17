@@ -1,10 +1,13 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Muli Font from Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet">
 
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -17,16 +20,24 @@
       font-family: 'Muli', sans-serif;
     }
 
+    #title {
+      text-indent: 10px;
+    }
+
     .affix {
       top: 20px;
       z-index: 9999 !important;
+    }
+
+    button {
+      border-radius: 10px;
     }
   </style>
 </head>
 
 <body>
   <div>
-    <h1>Cupertino Congregation</h1>
+    <h1 id="title">Cupertino Congregation</h1>
   </div>
 
 
@@ -56,6 +67,11 @@
   <div class="container-fluid">
     <div class="row">
       <nav class="col-sm-3">
+        <ul class="nav nav-pills nav-stacked" data-spy="affix" data-offset-top="205">
+          <button>test</button>
+          <button>test</button>
+          <button>test</button>
+        </ul>
       </nav>
     </div>
   </div>
@@ -69,11 +85,41 @@
           <li><a href="#section2">SBCC – Weekday</a></li>
           <li><a href="#section3">SBCC – Weekend</a></li>
           <li><a href="#section4">Sound</a></li>
+          <script>
+            $(".nav li").on("click", function() {
+              $(".nav li").removeClass("active");
+              $(this).addClass("active");
+            });
+          </script>
         </ul>
       </nav>
       <div class="col-sm-9">
-        <h1>Some text to enable scrolling</h1>
-        <h1>Some text to enable scrolling</h1>
+        <form>
+          <input type="text" placeholder="Add note">
+          <button type="submit">save</button>
+        </form>
+        <form action="#">
+          <label for="bibleReading"><input id="bibleReading" type="radio"
+            name="assignmentType" checked> Bible Reading</label>
+          <label for="initialVisit"><input id="initialVisit" type="radio"
+            name="assignmentType"> Initial Visit</label>
+          <label for="firstReturnVisit"><input id="firstReturnVisit" type="radio"
+            name="assignmentType"> First Return Visit</label>
+          <label for="secondReturnVisit"><input id="secondReturnVisit" type="radio"
+             name="assignmentType"> Second Return Visit</label>
+          <label for="thirdReturnVisit"><input id="thirdReturnVisit" type="radio"
+            name="assignmentType"> Third Return Visit</label>
+          <label for="bibleStudy"><input id="bibleStudy" type="radio"
+            name="assignmentType"> Bible Study</label>
+          <label for="bibleTalk"><input id="bibleTalk"type="radio"
+            name="assignmentType"> Bible Talk</label>
+
+          <input type="text" placeholder=" Assignment name" required>
+          <input type="text" placeholder=" Publisher" required>
+          <input type="text" placeholder=" Householder">
+          <input type="number" placeholder=" Talk number" required>
+          <button type="submit">submit</button>
+        </form>
         <h1>Some text to enable scrolling</h1>
         <h1>Some text to enable scrolling</h1>
         <h1>Some text to enable scrolling</h1>
