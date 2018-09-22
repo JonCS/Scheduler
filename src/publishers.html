@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Muli Font from Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <title> Congregation Scheduler </title>
+  <style>
+    body {
+      font-family: 'Muli', sans-serif;
+    }
+
+    #title {
+      text-indent: 10px;
+    }
+
+    .affix {
+      top: 20px;
+      z-index: 9999 !important;
+    }
+
+    button {
+      border-radius: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div>
+    <h1 id="title">Cupertino Congregation</h1>
+  </div>
+
+
+  <!-- Optional Javascript -->
+
+  <nav class="navbar navbar navbar-default navbar-static-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="http://localhost/scheduler/home.html">Home</a>
+      </div>
+      <ul class="nav navbar-nav navbar-left">
+        <li class="disabled"><a href="#">Create Assignment</a></li>
+        <li><a href="http://localhost/scheduler/publishers.html">Publishers</a></li>
+        <li><a href="http://localhost/scheduler/about.html">About</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Sort publishers by... section -->
+  <div class="container-fluid">
+    <div class="row">
+      <nav class="col-xs-3">
+        <h3>Sort by:</h3>
+        <ul class="nav nav-pills nav-stacked" data-spy="affix" data-offset-top="205">
+          <li class="active"><a href="#section1">Most Recent Assignment</a></li>
+          <li><a href="#section2">First Name</a></li>
+          <li><a href="#section3">Last Name</a></li>
+          <li><a href="#section4">Age</a></li>
+          <script>
+            $(".nav li").on("click", function() {
+              $(".nav li").removeClass("active");
+              $(this).addClass("active");
+            });
+          </script>
+        </ul>
+      </nav>
+      <div class="col-xs-9">
+        <h1>Publisher here</h1>
+        <h1>Publisher here</h1>
+        <h1>Publisher here</h1>
+        <h1>Publisher here</h1>
+        <h1>Publisher here</h1>
+        <h1>Publisher here</h1>
+        <h1>Publisher here</h1>
+        <h1>Publisher here</h1>
+        <h1>Publisher here</h1>
+        <h1>Publisher here</h1>
+        <h1>Publisher here</h1>
+        <h1>Publisher here</h1>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
