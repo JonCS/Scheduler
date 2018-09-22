@@ -42,10 +42,6 @@
 
 
   <!-- Optional Javascript -->
-  <!-- jQuery first, then Popper.js, then Boostrap JS -->
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 
   <nav class="navbar navbar navbar-default navbar-static-top">
     <div class="container-fluid">
@@ -64,52 +60,62 @@
   </nav>
 
   <!-- About section -->
-  <div class="panel-group container-fluid" id="accordion">
+  <div class="panel-group container-fluid">
     <div class="panel panel-default">
       <div class="panel-heading">
         <h4 class="panel-title">
-          <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+          <a data-toggle="collapse" href="#collapse1">
             Purpose
           </a>
         </h4>
       </div>
-      <div id="collapse1" class="panel-collapse collapse in">
+      <div id="collapse1" class="panel-collapse collapse">
         <div class="panel-body">
           Those who need to delegate assignments have an easy way to.....
         </div>
       </div>
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h4 class="panel-title">
-            <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+            <a data-toggle="collapse" href="#collapse2">
               How to use
             </a>
           </h4>
-        </div>
-        <div id="collapse2" class="panel-collapse collapse">
-          <div class="panel-body">
-            Information on how to use here...
-          </div>
+      </div>
+      <div id="collapse2" class="panel-collapse collapse">
+        <div class="panel-body">
+          Information on how to use here...
         </div>
       </div>
     </div>
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h4 class="panel-title">
-            <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+            <a data-toggle="collapse" href="#collapse3">
               Contact
             </a>
           </h4>
-        </div>
-        <div id="collapse3" class="panel-collapse collapse">
-          <div class="panel-body">
-            firstname lastname username@email.com
-          </div>
+      </div>
+      <div id="collapse3" class="panel-collapse collapse">
+        <div class="panel-body">
+          firstname lastname username@email.com
         </div>
       </div>
     </div>
   </div>
+  <div>
+    <button type="button" class="btn btn-md btn-success" data-toggle="popover"
+    data-placement="bottom" title="Create Assignment" data-content="HEELLO">
+    Create Assignment
+    </button>
 
+    <script>
+      $(document).ready(function(){
+      $('[data-toggle="popover"]').popover();
+      });
+    </script>
+  </div>
 </body>
 
 </html>
