@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Muli Font from Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <style>
+    body {
+      font-family: 'Muli', sans-serif;
+    }
+
+    .affix {
+      top: 20px;
+      z-index: 9999 !important;
+    }
+
+    button {
+      border-radius: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Optional Javascript -->
+  <!-- jQuery first, then Popper.js, then Boostrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+  <!-- Stack of options: Ministry School, SBCC, Sound -->
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xs-9">
+        <div class="container">
+          <h3>Meeting Assignment</h3>
+          <form class="form-horizontal">
+            <div class="form-group">
+              <label class="col-xs-2 control-label">Assignment Name:</label>
+              <div class="col-xs-10">
+                <input class="form-control" type="text" placeholder="任務" required>
+              </div>
+                <label class="col-xs-2 control-label">Type:</label>
+                <div class="col-xs-10">
+                  <select class="form-control" id="assignment-type">
+                  <option>Chairman</option>
+                  <option>Talk – Treasures from God's Word (10 min.)</option>
+                  <option>Digging for Spiritual Gems (8 min.)</option>
+                  <option>Congregation Bible Study (30 min.)</option>
+                  <option>Other (eg. Local Needs)</option>
+                </select>
+                </div>
+                <label class="col-xs-2 control-label">Duration (min.):</label>
+                <div class="col-xs-10">
+                  <input class="form-control" type="text" placeholder="幾分鐘">
+              </div>
+                  <label class="col-xs-2 control-label">Publisher Name:</label>
+                  <div class="col-xs-10">
+                    <input class="form-control" type="text" placeholder="姓名" required>
+              </div>
+                    <label class="col-xs-2 control-label">Date:</label>
+                    <div class="col-xs-10">
+                      <input class="form-control" type="text" placeholder="日期 (mm/dd/yyyy)" required>
+              </div>
+                      <label class="col-xs-2 control-label">Notes:</label>
+                      <div class="col-xs-10">
+                        <input class="form-control" type="text" placeholder="注意">
+              </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-xs-6">
+                          <button class="btn btn-default" type="submit">create</button>
+                        </div>
+                        <div class="col-xs-6">
+                          <button id="clearAll" class="btn btn-default btn-danger" type="submit">clear all</button>
+                        </div>
+                      </div>
+          </form>
+</body>
+
+</html>
