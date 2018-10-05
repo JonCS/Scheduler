@@ -40,6 +40,11 @@ cd target
 java -jar meeting-scheduler-0.0.1-SNAPSHOT.jar
 ```
 
+## Running
+```
+brew services start postgresql
+```
+
 #### Testing APIs
 
 All the APIs can be tested through the following link:
