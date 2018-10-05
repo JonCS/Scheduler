@@ -43,7 +43,7 @@
     }
 
     #button-row {
-      padding-top : 12px;
+      padding-top : 5px;
       padding-bottom : 5px;
     }
 
@@ -89,17 +89,16 @@
     <h1 id="title">Cupertino Congregation</h1>
   </div>
 
-
-  <!-- Optional Javascript -->
+  <!-- Navigation Bar -->
 
   <nav class="navbar navbar navbar-default navbar-static-top">
     <div class="container-fluid">
       <div class="navbar-header">
-        <a class="navbar-brand" href="http://localhost/scheduler/home.html">Home</a>
+        <a class="navbar-brand" href="http://localhost/ui/home.html">Home</a>
       </div>
       <ul class="nav navbar-nav navbar-left">
-        <li><a href="http://localhost/scheduler/publishers.html">Publishers</a></li>
-        <li><a href="http://localhost/scheduler/about.html">About</a></li>
+        <li><a href="http://localhost/ui/publishers.html">Publishers</a></li>
+        <li><a href="http://localhost/ui/about.html">About</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
@@ -107,37 +106,107 @@
     </div>
   </nav>
 
-  <!-- Stack of options: Ministry School, SBCC, Sound -->
   <div class="container-fluid">
     <div class="row">
+      <!-- Stack of options: Ministry School, SBCC, Sound -->
       <nav class="col-xs-3">
         <ul class="nav nav-pills nav-stacked" data-spy="affix" data-offset-top="205">
           <li class="active"><a href="#section1">Ministry School</a></li>
           <li><a href="#section2">SBCC – Weekday</a></li>
           <li><a href="#section3">SBCC – Weekend</a></li>
           <li><a href="#section4">Sound</a></li>
+
           <script>
             $(".nav li").on("click", function() {
               $(".nav li").removeClass("active");
               $(this).addClass("active");
             });
           </script>
+
         </ul>
       </nav>
+
       <div class="col-xs-9">
         <div>
-          <button id="popover" type="button" class="btn btn-md btn-success">
-            Create Assignment
-          </button>
-
-          <script>
-            $('#popover').popover({
-            html : true,
-            content: function() {
-              return $("#popover-content").html();
-            }
-          });
-          </script>
+          <button type="button" class="btn btn-info btn-md" data-toggle="modal"
+            data-target="#assignmentSlipModal"> Create Assignment</button>
+          <!-- Assignment Slip Modal -->
+          <div id="assignmentSlipModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+              <!-- Modal Content -->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                  <h3 class="modal-title">Ministry School Assignment Slip</h3>
+                </div>
+                <div class="modal-body" style="height: 370px">
+                  <form class="form-horizontal">
+                    <div class="form-group">
+                      <label class="col-xs-3 control-label">Name:</label>
+                      <div class="col-xs-9" style="padding-right: 50px">
+                        <input class="form-control" type="text" placeholder="姓名" required>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-xs-3 control-label">Assistant:</label>
+                      <div class="col-xs-9" style="padding-right: 50px">
+                        <input class="form-control" type="text" placeholder="助手">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-xs-3 control-label">Date:</label>
+                      <div class="col-xs-9" style="padding-right: 50px">
+                        <input class="form-control" type="text" placeholder="日期 ( mm / dd / yyyy )" required>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-xs-3 control-label">Study Point:</label>
+                      <div class="col-xs-9" style="padding-right: 50px">
+                        <input class="form-control" type="text" placeholder="受訓項目">
+                      </div>
+                    </div>
+                    <h4>Assignment Type:</h4>
+                    <div class="col-xs-6">
+                      <div class="radio">
+                        <label for="bibleReading"><input id="bibleReading" type="radio" name="assignmentType">Bible Reading</label>
+                      </div>
+                      <div class="radio">
+                        <label for="initialVisit"><input id="initialVisit" type="radio" name="assignmentType">Initial Visit</label>
+                      </div>
+                      <div class="radio">
+                        <label for="firstReturnVisit"><input id="firstReturnVisit" type="radio" name="assignmentType">First Return Visit</label>
+                      </div>
+                      <div class="radio">
+                        <label for="secondReturnVisit"><input id="secondReturnVisit" type="radio" name="assignmentType">Second Return Visit</label>
+                      </div>
+                    </div>
+                    <div class="col-xs-6">
+                      <div class="radio">
+                        <label for="thirdReturnVisit"><input id="thirdReturnVisit" type="radio" name="assignmentType">Third Return Visit</label>
+                      </div>
+                      <div class="radio">
+                        <label for="bibleStudy"><input id="bibleStudy" type="radio" name="assignmentType">Bible Study</label>
+                      </div>
+                      <div class="radio">
+                        <label for="bibleTalk"><input id="bibleTalk" type="radio" name="assignmentType">Bible Talk</label>
+                      </div>
+                      <div class="radio">
+                        <label for="other"><input id="other" type="radio" name="assignmentType">Other...</label>
+                      </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                  <div id="button-row" class="pull-left">
+                    <button id="createAssignment" class="btn btn-success" type="submit">create</button>
+                  </div>
+                  <div id="button-row" class="pull-right">
+                    <button id="clearAll" class="btn btn-danger" type="submit">clear all</button>
+                  </div>
+                </div>
+                </form>
+              </div>
+            </div>
+          </div>
 
           <div class="container-fluid hide" id="popover-content">
             <h3>Ministry School Assignment Slip</h3>
@@ -205,8 +274,9 @@
 
             </form>
           </div>
-          <div class="page-header">
 
+          <!-- Calendar Navigation -->
+          <div class="page-header">
             <div class="pull-right form-inline">
               <div class="btn-group">
                 <button class="btn btn-primary" data-calendar-nav="prev">
@@ -220,28 +290,25 @@
                 <button class="btn btn-warning" data-calendar-view="week">Week</button>
               </div>
             </div>
-
-            <h3></h3>
           </div>
 
           <!-- Calendar  -->
           <div id="calendar"></div>
           <div class="modal fade" role="dialog" id="events-modal">
             <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h3 class="modal-title">Event</h3>
-              </div>
-              <div class="modal-body" style="height: 400px">
-              </div>
-              <div class="modal-footer">
-                <a href="#" data-dismiss="modal" class="btn">Close</a>
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                  <h3 class="modal-title">Event</h3>
+                </div>
+                <div class="modal-body" style="height: 400px">
+                </div>
+                <div class="modal-footer">
+                  <a href="#" data-dismiss="modal" class="btn">Close</a>
+                </div>
               </div>
             </div>
           </div>
-          </div>
-
         </div>
       </div>
     </div>
@@ -255,19 +322,19 @@
   <script type="text/javascript" src="bower_components/bootstrap-calendar/js/calendar.js"></script>
   <script type="text/javascript" src="bower_components/bootstrap-calendar/js/app.js"></script>
   <script type="text/javascript">
-      var calendar = $("#calendar").calendar({
-        tmpl_path: "./tmpls/",
-        format12: true,
-        modal: "#events-modal",
-        modal_type: "template",
-        modal_title: function(e) {
-          return e.title
-        },
-        events_source: getAssignments
-      });
+    var calendar = $("#calendar").calendar({
+      tmpl_path: "./tmpls/",
+      format12: true,
+      modal: "#events-modal",
+      modal_type: "template",
+      modal_title: function(e) {
+        return e.title
+      },
+      events_source: getAssignments
+    });
 
     $('.cal-cell').unbind("dblclick");
-    $( "*[data-cal-date]").unbind( "click" );
+    $("*[data-cal-date]").unbind("click");
   </script>
 </body>
 
