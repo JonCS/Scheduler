@@ -61,17 +61,28 @@
 
   </style>
   <script type="text/javascript">
-    function getAssignments() {
-      //call API to get list of assignments for current Congregation
-      /*var congId = 1; //change this to current congregation later
-      var url = "http://localhost:8080/api/congregation/" + congId + "/assignments"
+    <!-- assignment-controller -->
+
+    function reassignMeetingAssignment() {}
+
+    function reassignMinistrySchoolAssignment() {}
+
+    function getPublisherAssignment() {}
+
+    function getAssignmentsForDay(congId, month, day, year) {
+      // GET /api/congregation/{congregationId}/assignments/{calendarMonth}/{calendarDay}/{calendarYear}
+      var url = "http://localhost:8080/api/congregation/" + congId + "/assignments/" +
+        month + "/" + day + "/" + year;
       $.ajax({
         url: url,
         type: 'GET',
         success: function
 
-      });*/
+      });
+    }
 
+    function getAssignments() {
+      // TEMP. DELETE LATER
       return [{
         "id": 293,
         "title": "Event 1",
@@ -80,6 +91,104 @@
         "start": 1538664931221, // Milliseconds
         "end": 1538664931229 // Milliseconds
       }];
+
+    }
+
+    function getAssignmentsForMonth() {}
+
+    function createMeetingAssignment() {
+      /*
+      POST /api/publisher/{publisherId}/MeetingAssignment
+      {
+        "assignmentType": "string",
+        "date": "2018-10-05",
+        "duration": 0,
+        "id": 0,
+        "notes": "string"
+      }
+      */
+    }
+
+    function editMeetingAssignment() {}
+
+    function createMinistrySchoolAssignment(assignmentType, date, id, studyPoint) {
+      {
+        "assignmentType": "string",
+        "date": "2018-10-05",
+        "id": 0,
+        "studyPoint": 0
+      }
+    }
+
+    function getPublisherAssignments() {}
+
+    <!-- congregation-controller -->
+
+    function createCongregation() {
+      // POST /api/congregation
+    }
+
+    function deleteCongregation() {
+      // DELETE /api/congregation/{congregationId}
+    }
+
+    function updateCongregation() {
+      // PUT /api/congregation/{congregationId}
+    }
+
+    function getCongregations() {
+      // GET /api/congregations
+    }
+
+    function getCongregation() {
+      // GET /api/congregations/{congregationId}
+    }
+
+    <!-- publisher-controller -->
+
+    function createPublisher(congId, age, assignments, assistantAssignments, firstName,
+                              lastName, notes) {
+      // POST /api/congregation/{congregationId}/publisher
+      var url = "http://localhost:8080/api/congregation/" + congId + "/publisher";
+      var data = {
+        "age": age,
+        "assignments": assignments,
+        "assistantAssignments": assistantAssignments,
+        "firstName": firstName,
+        "id": 0,
+        "lastName": lastName,
+        "notes": notes
+      }
+
+      $.ajax({
+        url: url,
+        type: 'POST',
+        success: function(result)
+      })
+    }
+
+    function updatePublisher() {}
+
+    function getPublishers(congId) { //should be named getCongregationPublishers
+      var congId = 1; // TODO change this to current congregation later
+      var url = "http://localhost:8080/api/congregation/" + congId + "/assignments"
+      $.ajax({
+        url: url,
+        type: 'GET',
+        success: function
+      });
+    }
+
+    function deletePublisher() {}
+
+    function getPublisher(publisherId) {
+      // GET /api/publisher/{publisherId}
+      var url = "http://localhost:8080/api/publisher/" + publisherId
+      $.ajax({
+        url: url,
+        type: 'GET',
+        success: function
+      })
     }
   </script>
 </head>
@@ -128,8 +237,7 @@
 
       <div class="col-xs-9">
         <div>
-          <button type="button" class="btn btn-info btn-md" data-toggle="modal"
-            data-target="#assignmentSlipModal"> Create Assignment</button>
+          <button type="button" class="btn btn-info btn-md" data-toggle="modal" data-target="#assignmentSlipModal"> Create Assignment</button>
           <!-- Assignment Slip Modal -->
           <div id="assignmentSlipModal" class="modal fade" role="dialog">
             <div class="modal-dialog">
