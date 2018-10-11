@@ -11,6 +11,8 @@ public interface AssignmentService {
 	
 	public Set<Assignment> getPublisherAssignments(Long publisherId);
 	
+	public List<Assignment> getCongregationAssignments(Long congregationId, String assignmentType);
+	
 	public Assignment getAssignment(Long assignmentId);
 	
 	public List<Assignment> getAssignmentsByMonth(Long congregationId, int month, int year);
@@ -30,4 +32,5 @@ public interface AssignmentService {
 	public void reassignMinistrySchoolAssignment(Long newPublisherId, Long newAssistantId, Long assignmentId);
 	
 	public void deleteAssignment(Long publisherId, Long assignmentId);
+	
 }

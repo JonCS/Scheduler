@@ -35,6 +35,12 @@ public class AssignmentController {
 		return assignmentService.getAssignment(assignmentId);
 	}
 	
+	@RequestMapping(value = "/api/{congregationId}/assignments", method = RequestMethod.GET)
+	public List<Assignment> getCongregationAssignments(@PathVariable("congregationId") Long congregationId,
+			@RequestParam("assignmentType") Optional<String> assignmentType){
+		return assignmentService.getCongregationAssignments(congregationId, assignmentType.orElse(""));
+	}
+	
 	@RequestMapping(value = "/api/congregation/{congregationId}/assignments/{calendarMonth}/{calendarYear}", method = RequestMethod.GET)
 	public List<Assignment> getAssignmentsForMonth(@PathVariable("congregationId") Long congregationId,
 			@PathVariable("calendarMonth") int month,
