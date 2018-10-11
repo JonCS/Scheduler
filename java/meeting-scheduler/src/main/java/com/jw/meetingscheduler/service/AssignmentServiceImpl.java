@@ -153,4 +153,15 @@ public class AssignmentServiceImpl implements AssignmentService {
 	public List<Assignment> getAssignmentsByDay(Long congregationId, int month, int day, int year) {
 		return assignmentRepository.getByCongregation_IdAndYearAndMonthAndDay(congregationId, year, month, day);
 	}
+
+	@Override
+	public List<Assignment> getCongregationAssignments(Long congregationId, String assignmentType) {
+		if(assignmentType.equalsIgnoreCase("MinistrySchoolAssignment"))
+			return assignmentRepository.getMinistrySchoolAssignmentsByCongregation_Id(congregationId);
+		else if(assignmentType.equalsIgnoreCase("MeetingAssignment"))
+			return assignmentRepository.getMeetingAssignmentsByCongregation_Id(congregationId);
+		else
+			return assignmentRepository.getByCongregation_Id(congregationId);
+		
+	}
 }
