@@ -144,31 +144,9 @@
 
     function getAssignmentsForDay(congId, month, day, year) {
       // GET /api/congregation/{congregationId}/assignments/{calendarMonth}/{calendarDay}/{calendarYear}
-      var url = "http://localhost:8080/api/congregation/" + congId + "/assignments/" + \
+      var url = "http://localhost:8080/api/congregation/" + congId + "/assignments/" +
         month + "/" + day + "/" + year;
 
-      /*$.ajax({
-        url: url,
-        type: 'GET',
-        success: function
-
-<<<<<<< HEAD
-      });
-    }
-
-    function getAssignments() {
-      // DELETE LATER
-      return [{
-        "id": 293,
-        "title": "Event 1",
-        "url": "http://example.com",
-        "class": "event-important",
-        "start": 1538664931221, // Milliseconds
-        "end": 1538664931229 // Milliseconds
-      }];
-=======
-      });*/
->>>>>>> b3007d1344ccde479f9b6bb210abd119e7417c6f
     }
 
     function getAssignmentsForMonth() {}
