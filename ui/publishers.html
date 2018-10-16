@@ -101,9 +101,9 @@
       </nav>
       <div class="col-xs-9">
         <!-- Modal Trigger -->
-        <button type="button" class="btn btn-info btn-md" data-toggle="modal" data-target="#addPublisher">Add Publisher</button>
+        <button type="button" class="btn btn-info btn-md" data-toggle="modal" data-target="#addPublisherModal">Add Publisher</button>
         <!-- Modal -->
-        <div id="addPublisher" class="modal fade" role="dialog">
+        <div id="addPublisherModal" class="modal fade" role="dialog">
           <div class="modal-dialog">
             <!-- Modal Content -->
             <div class="modal-content">
@@ -112,72 +112,94 @@
                 <h3 class="modal-title">Publisher Information</h3>
               </div>
               <div class="modal-body" style="height: 370px">
-                <form class="form-horizontal">
+                <form id="addPublisherForm" class="form-horizontal">
                   <div class="form-group">
                     <label class="col-xs-3 control-label">First Name:</label>
                     <div class="col-xs-9" style="padding-right: 50px">
-                      <input class="form-control" type="text" placeholder="本名" required>
+                      <input id="firstNameInput" class="form-control" type="text" placeholder="本名" required>
                     </div>
                   </div>
                   <div class="form-group">
                     <label class="col-xs-3 control-label">Last Name:</label>
                     <div class="col-xs-9" style="padding-right: 50px">
-                      <input class="form-control" type="text" placeholder="姓" required>
+                      <input id="lastNameInput" class="form-control" type="text" placeholder="姓" required>
                     </div>
                   </div>
                   <div class="form-group">
                     <label class="col-xs-3 control-label">Age:</label>
                     <div class="col-xs-9" style="padding-right: 50px">
-                      <input class="form-control" type="text" placeholder="年齡">
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="col-xs-3 control-label">Baptism Date:</label>
-                    <div class="col-xs-9" style="padding-right: 50px">
-                      <input class="form-control" type="text" placeholder="受浸日 ( mm / dd / yyyy )">
+                      <input id="ageInput" class="form-control" type="number" placeholder="年齡">
                     </div>
                   </div>
                   <h4>Type:</h4>
                   <div class="col-xs-6">
                     <div class="form-check">
-                      <input type="checkbox" class="form-check-input" id="publisher">
+                      <input type="checkbox" class="form-check-input" id="publisher" value="PUBLISHER">
                       <label class="form-check-label" for="publisher">Publisher</label>
                     </div>
                     <div class="form-check">
-                      <input type="checkbox" class="form-check-input" id="ubp">
+                      <input type="checkbox" class="form-check-input" id="ubp" value = "UNBAPTIZED_PUBLISHER">
                       <label class="form-check-label" for="ubp">Unbaptized Publisher</label>
                     </div>
                     <div class="form-check">
-                      <input type="checkbox" class="form-check-input" id="auxileryPioneer">
-                      <label class="form-check-label" for="auxileryPioneer">Auxilery Pioneer</label>
-                    </div>
-                    <div class="form-check">
-                      <input type="checkbox" class="form-check-input" id="pioneer">
-                      <label class="form-check-label" for="pioneer">Pioneer</label>
+                      <input type="checkbox" class="form-check-input" id="pioneer" value="REGULAR_PIONEER">
+                      <label class="form-check-label" for="pioneer">Regular Pioneer</label>
                     </div>
                   </div>
                   <div class"col-xs-6">
                     <div class="form-check">
-                      <input type="checkbox" class="form-check-input" id="specialPioneer">
+                      <input type="checkbox" class="form-check-input" id="specialPioneer" value="SPECIAL_PIONEER">
                       <label class="form-check-label" for="specialPioneer">Special Pioneer</label>
                     </div>
                     <div class="form-check">
-                      <input type="checkbox" class="form-check-input" id="elder">
+                      <input type="checkbox" class="form-check-input" id="elder" value="ELDER">
                       <label class="form-check-label" for="elder">Elder</label>
                     </div>
                     <div class="form-check">
-                      <input type="checkbox" class="form-check-input" id="ministerialServant">
+                      <input type="checkbox" class="form-check-input" id="ministerialServant" value="MINISTERIAL_SERVANT">
                       <label class="form-check-label" for="ministerialServant">Ministerial Servant</label>
-                    </div>
-                    <div class="form-check">
-                      <input type="checkbox" class="form-check-input" id="other">
-                      <label class="form-check-label" for="other">Other...</label>
                     </div>
                   </div>
               </div>
               <div class="modal-footer">
                 <div id="button-row" class="pull-left">
-                  <button id="addPublisher" class="btn btn-success" type="submit">add</button>
+                  <button id="addPublisherButton" class="btn btn-success" type="submit">add</button>
+                  <script type = "text/javascript">
+                    $('#addPublisherForm').on('submit', function (e) {
+                      e.preventDefault();
+
+                      //construct URL
+                      var congId = 1; //change this later
+                      var url = "http://localhost:8080/api/congregation/" + congId + "/publisher";
+
+                      //create publisher based on input
+                      var pubTypes = $('input:checkbox:checked').map(function() {
+                        return this.value;
+                      }).get();
+
+                      var publisher = {
+                        firstName: $("#firstNameInput").val(),
+                        lastName: $("#lastNameInput").val(),
+                        age: $("#ageInput").val(),
+                        publisherTypes: pubTypes
+                      };
+
+                      //AJAX call
+                      $.ajax({
+                        url: url,
+                        type: 'POST',
+                        dataType: 'json',
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify(publisher),
+                      }).done(function(data){
+                        console.log("Successfully created publisher");
+                      });
+
+                      //close modal
+                      $('#addPublisherModal').modal('toggle');
+
+                    })
+                  </script>
                 </div>
                 <div id="button-row" class="pull-right">
                   <button id="clearAll" class="btn btn-default btn-danger" type="submit">clear all</button>
