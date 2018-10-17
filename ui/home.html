@@ -278,7 +278,7 @@
           <li class="active"><a id="min_school_anchor" href="#section1">Ministry School</a></li>
           <script>
             $('#min_school_anchor').on('click', function (e) {
-              $('#createAssignmentButton').attr('data-target','#assignmentSlipModal');
+              $('#createAssignmentButton').attr('data-target','#minSchoolAssignmentSlipModal');
             });
           </script>
 
@@ -314,10 +314,10 @@
 
       <div class="col-xs-9">
         <div>
-          <button id="createAssignmentButton" type="button" class="btn btn-info btn-md" data-toggle="modal" data-target="#assignmentSlipModal"> Create Assignment</button>
+          <button id="createAssignmentButton" type="button" class="btn btn-info btn-md" data-toggle="modal" data-target="#minSchoolAssignmentSlipModal"> Create Assignment</button>
 
           <!-- Assignment Slip Modal -->
-          <div id="assignmentSlipModal" class="modal fade" role="dialog">
+          <div id="minSchoolAssignmentSlipModal" class="modal fade" role="dialog">
             <div class="modal-dialog">
               <!-- Modal Content -->
               <div class="modal-content">
@@ -330,74 +330,134 @@
 
                 <!-- Modal body -->
                 <div class="modal-body" style="height: 370px">
-                  <form class="form-horizontal">
+                  <form id="minSchoolAssignmentForm" class="form-horizontal" >
                     <div class="form-group">
                       <label class="col-xs-3 control-label">Name:</label>
                       <div class="col-xs-9" style="padding-right: 50px">
-                        <input class="form-control" type="text" placeholder="姓名" required>
+                        <input id="minSchoolPubNameInput" class="form-control" type="text" placeholder="姓名" required>
                       </div>
                     </div>
 
                     <div class="form-group">
                       <label class="col-xs-3 control-label">Assistant:</label>
                       <div class="col-xs-9" style="padding-right: 50px">
-                        <input class="form-control" type="text" placeholder="助手">
+                        <input id="minSchoolAssistantNameInput" class="form-control" type="text" placeholder="助手">
                       </div>
                     </div>
 
                     <div class="form-group">
                       <label class="col-xs-3 control-label">Date:</label>
                       <div class="col-xs-9" style="padding-right: 50px">
-                        <input class="form-control" type="text" placeholder="日期 ( mm / dd / yyyy )" required>
+                        <input id="minSchoolDateInput" class="form-control" type="text" placeholder="日期 (yyyy-mm-dd)" required>
                       </div>
                     </div>
 
                     <div class="form-group">
                       <label class="col-xs-3 control-label">Study Point:</label>
                       <div class="col-xs-9" style="padding-right: 50px">
-                        <input class="form-control" type="text" placeholder="受訓項目">
+                        <input id="studyPointInput" class="form-control" type="number" placeholder="受訓項目" required>
                       </div>
                     </div>
 
                     <h4>Assignment Type:</h4>
                     <div class="col-xs-6">
                       <div class="radio">
-                        <label for="bibleReading"><input id="bibleReading" type="radio" name="assignmentType">Bible Reading</label>
+                        <label for="bibleReading"><input id="bibleReading" type="radio" name="minSchoolAssignmentType" value="Bible Reading">Bible Reading</label>
                       </div>
                       <div class="radio">
-                        <label for="initialVisit"><input id="initialVisit" type="radio" name="assignmentType">Initial Visit</label>
+                        <label for="initialVisit"><input id="initialVisit" type="radio" name="minSchoolAssignmentType" value="Initial Visit">Initial Visit</label>
                       </div>
                       <div class="radio">
-                        <label for="firstReturnVisit"><input id="firstReturnVisit" type="radio" name="assignmentType">First Return Visit</label>
+                        <label for="firstReturnVisit"><input id="firstReturnVisit" type="radio" name="minSchoolAssignmentType" value="First Return Visit">First Return Visit</label>
                       </div>
                       <div class="radio">
-                        <label for="secondReturnVisit"><input id="secondReturnVisit" type="radio" name="assignmentType">Second Return Visit</label>
+                        <label for="secondReturnVisit"><input id="secondReturnVisit" type="radio" name="minSchoolAssignmentType" value="Second Return Visit">Second Return Visit</label>
                       </div>
                     </div>
 
                     <div class="col-xs-6">
                       <div class="radio">
-                        <label for="thirdReturnVisit"><input id="thirdReturnVisit" type="radio" name="assignmentType">Third Return Visit</label>
+                        <label for="thirdReturnVisit"><input id="thirdReturnVisit" type="radio" name="minSchoolAssignmentType" value="Third Return Visit">Third Return Visit</label>
                       </div>
                       <div class="radio">
-                        <label for="bibleStudy"><input id="bibleStudy" type="radio" name="assignmentType">Bible Study</label>
+                        <label for="bibleStudy"><input id="bibleStudy" type="radio" name="minSchoolAssignmentType" value="Bible Study">Bible Study</label>
                       </div>
                       <div class="radio">
-                        <label for="bibleTalk"><input id="bibleTalk" type="radio" name="assignmentType">Bible Talk</label>
-                      </div>
-                      <div class="radio">
-                        <label for="other"><input id="other" type="radio" name="assignmentType">Other...</label>
+                        <label for="bibleTalk"><input id="bibleTalk" type="radio" name="minSchoolAssignmentType" value="Bible Talk">Bible Talk</label>
                       </div>
                     </div>
                 </div>
 
                 <!-- Modal footer -->
                 <div class="modal-footer">
-                  <div id="button-row" class="pull-left">
-                    <button id="createAssignment" class="btn btn-success" type="submit">create</button>
+                  <div class="pull-left">
+                    <button id="createMinSchoolAssignmentButton" class="btn btn-success" type="submit">create</button>
+                    <script>
+                      $('#minSchoolAssignmentForm').submit(function(e) {
+                        e.preventDefault(); //prevent page refresh
+
+                        //get list of publishers for congregation
+                        var congId = 1; //change this later
+                        var url = "http://localhost:8080/api/congregation/" + congId + "/publishers";
+                        $.ajax({
+                          url: url,
+                          type: 'GET',
+                          dataType: 'json'
+                        }).done(function(data) {
+                          var i;
+                          var publisherId = -1;
+                          var assistantId = -1;
+
+                          //search for publisher name
+                          for(i = 0; i < data.length; i++) {
+                            var name = data[i].firstName.trim() + " " + data[i].lastName.trim();
+                            if(name === $('#minSchoolPubNameInput').val().trim())
+                              publisherId = data[i].id;
+                            else if($('#minSchoolAssistantNameInput').val().trim() !== "" && name === $('#minSchoolAssistantNameInput').val().trim() != "" )
+                              assistantId = data[i].id;
+                          }
+
+                          //display error if publisher/assistant cannot be found
+                          if(publisherId < 0)
+                            alert("No publisher with name exists")
+                          else if($('#minSchoolAssistantNameInput').val().trim() !== "" && assistantId < 0)
+                            alert("No publisher with name exists")
+                          else {
+                            //verify that an assignment type has been checked
+                            if($('input[name=minSchoolAssignmentType]:checked').val() === undefined){
+                              alert("Assignment type cannot be blank");
+                              return;
+                            }
+
+                            //create assignment
+                            var minSchoolAssignment = {
+                              assignmentType: $('input[name=minSchoolAssignmentType]:checked').val(),
+                              date: $('#minSchoolDateInput').val(),
+                              studyPoint: $('#studyPointInput').val()
+                            };
+
+                            //create assignment
+                            var url = "http://localhost:8080/api/publisher/" + publisherId + "/MinistrySchoolAssignment";
+                            if(assistantId > -1)
+                              url += "?assistantId=" + assistantId;
+
+                            $.ajax({
+                              url: url,
+                              type: 'POST',
+                              dataType: 'json',
+                              contentType: "application/json; charset=utf-8",
+                              data: JSON.stringify(minSchoolAssignment)
+                            });
+
+                            $('#minSchoolAssignmentSlipModal').modal('toggle');
+                          }
+                        });
+
+                      })
+                    </script>
                   </div>
-                  <div id="button-row" class="pull-right">
-                    <button id="clearAll" class="btn btn-danger" type="submit">clear all</button>
+                  <div class="pull-right">
+                    <button id="clearAll" class="btn btn-danger">clear all</button>
                   </div>
                 </div>
                 </form>
@@ -418,18 +478,19 @@
 
                 <!-- Assignment slip content -->
                 <div class="modal-body">
-                  <form class="form-horizontal">
+                  <form id="createWeekdayAssignmentForm" class="form-horizontal">
                     <div class="form-group">
                       <label class="col-xs-3 control-label">Assignment Name:</label>
                       <div class="col-xs-9" style="padding-right: 50px">
-                        <input class="form-control" type="text" placeholder="任務" required>
+                        <input id="weekdayAssignmentNameInput" class="form-control" type="text" placeholder="任務" required>
                       </div>
                     </div>
 
+                    <!-- Is this necessary since we have assignment name input already?
                     <div class="form-group">
                       <label class="col-xs-3 control-label">Type:</label>
                       <div class="col-xs-9" style="padding-right: 50px">
-                        <select class="form-control" id="assignment-type">
+                        <select id="weekdayAssignmentTypeInput" class="form-control" id="assignment-type">
                           <option>Chairman</option>
                           <option>Talk – Treasures from God's Word (10 min.)</option>
                           <option>Digging for Spiritual Gems (8 min.)</option>
@@ -438,42 +499,98 @@
                         </select>
                       </div>
                     </div>
+                   -->
 
                     <div class="form-group">
                       <label class="col-xs-3 control-label">Duration (min.):</label>
                       <div class="col-xs-9" style="padding-right: 50px">
-                        <input class="form-control" type="text" placeholder="幾分鐘">
+                        <input id="weekdayAssignmentDurationInput" class="form-control" type="number" placeholder="幾分鐘">
                       </div>
                     </div>
 
                     <div class="form-group">
                       <label class="col-xs-3 control-label">Publisher Name:</label>
                       <div class="col-xs-9" style="padding-right: 50px">
-                        <input class="form-control" type="text" placeholder="姓名" required>
+                        <input id="weekdayPublisherNameInput"class="form-control" type="text" placeholder="姓名" required>
                       </div>
                     </div>
 
                     <div class="form-group">
                       <label class="col-xs-3 control-label">Date:</label>
                       <div class="col-xs-9" style="padding-right: 50px">
-                        <input class="form-control" type="text" placeholder="日期 (mm/dd/yyyy)" required>
+                        <input id="weekdayAssignmentDateInput" class="form-control" type="text" placeholder="日期 (yyyy-mm-dd)" required>
                       </div>
                     </div>
 
                     <div class="form-group">
                       <label class="col-xs-3 control-label">Notes:</label>
                       <div class="col-xs-9" style="padding-right: 50px">
-                        <textarea class="form-control" rows="5"></textarea>
+                        <textarea id="weekdayAssignmentNotesInput" class="form-control" rows="5"></textarea>
                       </div>
                     </div>
 
-                    <!-- Assignment modal footer -->
+                    <!-- Weekday assignment modal footer -->
                     <div class="modal-footer">
-                      <div id="button-row" class="pull-left">
-                        <button id="createAssignment" class="btn btn-success" type="submit">create</button>
+                      <div class="pull-left">
+                        <button id="createWeekdayAssignmentButton" type="submit" class="btn btn-success">create</button>
+                        <script>
+                          $('#createWeekdayAssignmentForm').submit(function(e) {
+                            e.preventDefault(); //prevent page refresh
+
+                            //get list of publishers for congregation
+                            var congId = 1; //change this later
+                            var url = "http://localhost:8080/api/congregation/" + congId + "/publishers";
+                            $.ajax({
+                              url: url,
+                              type: 'GET',
+                              dataType: 'json'
+                            }).done(function(data) {
+                              var i;
+                              var publisherId = -1;
+
+                              //search for publisher name
+                              for(i = 0; i < data.length; i++) {
+                                var name = data[i].firstName.trim() + " " + data[i].lastName.trim();
+                                if(name === $('#weekdayPublisherNameInput').val().trim()){
+                                  publisherId = data[i].id;
+                                  break;
+                                }
+                              }
+
+                              //display error if publisher/assistant cannot be found
+                              if(publisherId < 0)
+                                alert("No publisher with name exists")
+                              else {
+                                //create assignment
+
+                                var meetingAssignment = {
+                                  //assignmentType: $('input[name=minSchoolAssignmentType]:checked').val(),
+                                  assignmentType: $('#weekdayAssignmentNameInput').val().trim(),
+                                  date: $('#weekdayAssignmentDateInput').val(),
+                                  duration: $('#weekdayAssignmentDurationInput').val(),
+                                  notes: $('#weekdayAssignmentNotesInput').val()
+                                };
+
+                                var url = "http://localhost:8080/api/publisher/" + publisherId + "/MeetingAssignment";
+
+                                $.ajax({
+                                  url: url,
+                                  type: 'POST',
+                                  dataType: 'json',
+                                  contentType: "application/json; charset=utf-8",
+                                  data: JSON.stringify(meetingAssignment)
+                                });
+
+                                $('#weekdayAssignmentSlipModal').modal('toggle');
+                              }
+                            });
+
+                          })
+                        </script>
                       </div>
-                      <div id="button-row" class="pull-right">
-                        <button id="clearAll" class="btn btn-danger" type="submit">clear all</button>
+
+                      <div class="pull-right">
+                        <button id="clearAllButton" class="btn btn-danger">clear all</button>
                       </div>
                     </div>
 
@@ -481,7 +598,6 @@
                 </div>
 
               </div>
-            </form>
             </div>
           </div>
 
