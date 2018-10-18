@@ -19,7 +19,6 @@
 	      async: false
 	    }).done(function(data){
 	      //update assignments
-	      console.log(data);
 	      var i;
 	      for(i = 0; i < data.length; i++) {
 	        var a = data[i];
