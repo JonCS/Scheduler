@@ -3,7 +3,49 @@
 	"use strict";
 
 	var options = {
-		events_source: 'events.json.php',
+		modal: "#events-modal",
+		modal_type: "template",
+		modal_title: function(e) {
+			return e.title
+		},
+		events_source: function(){
+			var assignments = new Array();
+
+	    var url = "http://localhost:8080/scheduler-service/api/1/assignments?assignmentType="; //change congregation id later
+	    $.ajax({
+	      url: url,
+	      type: 'GET',
+	      dataType: 'json',
+	      async: false
+	    }).done(function(data){
+	      //update assignments
+	      console.log(data);
+	      var i;
+	      for(i = 0; i < data.length; i++) {
+	        var a = data[i];
+
+	        //get date
+	        var startDate = new Date(a.date);
+	        startDate = Date.parse(new Date(startDate.getTime() - startDate.getTimezoneOffset() * -60000));
+
+	        //create assignment object and add it to array
+	        var assignment = {
+	          id: a.id,
+	          title: a.assignmentType,
+	          url: "www.example.com",
+	          class: "event-important",
+	          start: startDate,
+	          end: startDate + 1,
+	          description: "Test description"
+	        };
+
+	        assignments[i] = assignment;
+				}
+
+			});
+
+			return assignments;
+		},
 		view: 'month',
 		tmpl_path: './tmpls/',
 		tmpl_cache: false,
