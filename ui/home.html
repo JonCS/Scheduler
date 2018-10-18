@@ -75,20 +75,20 @@
           return e.title
         },
         events_source: updateAssignments()
-      });
 
+      }); //end of calendar
       $('.cal-cell').unbind("dblclick");
       $("*[data-cal-date]").unbind("click");
-  })
+  });
 
 
-  function updateAssignments(assignmentType){
+   function updateAssignments(assignmentType){
     if(assignmentType === undefined)
       assignmentType = "";
 
     var assignments = new Array();
 
-    var url = "http://localhost:8080/scheduler-service/api/3/assignments?assignmentType=" + assignmentType; //change congregation id later
+    var url = "http://localhost:8080/scheduler-service/api/1/assignments?assignmentType=" + assignmentType; //change congregation id later
     $.ajax({
       url: url,
       type: 'GET',
@@ -120,131 +120,12 @@
 
       }
 
-      //update calendar
-      /*var replace_events = {
-        events_source : assignments
-      //  day: "2018-09-12"
-    };*/
-      //calendar.setOptions(replace_events);
-      //calendar.view();
-
       $('.cal-cell').unbind("dblclick");
       $("*[data-cal-date]").unbind("click");
     });
     return assignments;
   }
 
-    <!-- assignment-controller -->
-
-    function reassignMeetingAssignment() {}
-
-    function reassignMinistrySchoolAssignment() {}
-
-    function getPublisherAssignment() {}
-
-    function getAssignmentsForDay(congId, month, day, year) {
-      // GET /api/congregation/{congregationId}/assignments/{calendarMonth}/{calendarDay}/{calendarYear}
-      var url = "http://localhost:8080/api/congregation/" + congId + "/assignments/" +
-        month + "/" + day + "/" + year;
-
-    }
-
-    function getAssignmentsForMonth() {}
-
-    function createMeetingAssignment() {
-      /*
-      POST /api/publisher/{publisherId}/MeetingAssignment
-      {
-        "assignmentType": "string",
-        "date": "2018-10-05",
-        "duration": 0,
-        "id": 0,
-        "notes": "string"
-      }
-      */
-    }
-
-    function editMeetingAssignment() {}
-
-    function createMinistrySchoolAssignment(assignmentType, date, id, studyPoint) {
-      /*{
-        "assignmentType": "string",
-        "date": "2018-10-05",
-        "id": 0,
-        "studyPoint": 0
-      }*/
-    }
-
-    function getPublisherAssignments() {}
-
-    <!-- congregation-controller -->
-
-    function createCongregation() {
-      // POST /api/congregation
-    }
-
-    function deleteCongregation() {
-      // DELETE /api/congregation/{congregationId}
-    }
-
-    function updateCongregation() {
-      // PUT /api/congregation/{congregationId}
-    }
-
-    function getCongregations() {
-      // GET /api/congregations
-    }
-
-    function getCongregation() {
-      // GET /api/congregations/{congregationId}
-    }
-
-    <!-- publisher-controller -->
-
-    /*function createPublisher(congId, age, assignments, assistantAssignments, firstName,
-                              lastName, notes) {
-      // POST /api/congregation/{congregationId}/publisher
-      var url = "http://localhost:8080/api/congregation/" + congId + "/publisher";
-      var data = {
-        "age": age,
-        "assignments": assignments,
-        "assistantAssignments": assistantAssignments,
-        "firstName": firstName,
-        "id": 0,
-        "lastName": lastName,
-        "notes": notes
-      }
-
-      $.ajax({
-        url: url,
-        type: 'POST',
-        success: function(result)
-      })
-    }
-
-    function updatePublisher() {}
-
-    function getPublishers(congId) { //should be named getCongregationPublishers
-      var congId = 1; // TODO change this to current congregation later
-      var url = "http://localhost:8080/api/congregation/" + congId + "/assignments"
-      $.ajax({
-        url: url,
-        type: 'GET',
-        success: function(result)
-      });
-    }
-
-    function deletePublisher() {}
-
-    function getPublisher(publisherId) {
-      // GET /api/publisher/{publisherId}
-      var url = "http://localhost:8080/api/publisher/" + publisherId
-      $.ajax({
-        url: url,
-        type: 'GET',
-        success: function(result)
-      })
-    }*/
   </script>
 </head>
 
