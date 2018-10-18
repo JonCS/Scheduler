@@ -81,7 +81,6 @@
       $("*[data-cal-date]").unbind("click");
   });
 
-
    function updateAssignments(assignmentType){
     if(assignmentType === undefined)
       assignmentType = "";
@@ -96,7 +95,6 @@
       async: false
     }).done(function(data){
       //update assignments
-      console.log(data);
       var i;
       for(i = 0; i < data.length; i++) {
         var a = data[i];
@@ -124,6 +122,16 @@
       $("*[data-cal-date]").unbind("click");
     });
     return assignments;
+  }
+
+  //reload assignments after assignment creation
+  function refreshCalendar(currentViewDate){
+    var replace_events = {
+      events_source : updateAssignments(),
+      day: currentViewDate
+    };
+    calendar.setOptions(replace_events);
+    calendar.view();
   }
 
   </script>
@@ -337,6 +345,8 @@
                               dataType: 'json',
                               contentType: "application/json; charset=utf-8",
                               data: JSON.stringify(minSchoolAssignment)
+                            }).done(function(data){
+                              refreshCalendar(data.date);
                             });
 
                             $('#minSchoolAssignmentSlipModal').modal('toggle');
@@ -469,8 +479,11 @@
                                   dataType: 'json',
                                   contentType: "application/json; charset=utf-8",
                                   data: JSON.stringify(meetingAssignment)
+                                }).done(function(data){
+                                  refreshCalendar(data.date);
                                 });
 
+                                //close modal and refresh assignments
                                 $('#weekdayAssignmentSlipModal').modal('toggle');
                               }
                             });
