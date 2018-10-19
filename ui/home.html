@@ -19,6 +19,11 @@
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
 
+  <!-- Autocomplete -->
+  <script type="text/javascript" src="./autocomplete/autocomplete.js"></script>
+  <link rel="stylesheet" href="./autocomplete/autocomplete.css"/>
+
+
   <title> Congregation Scheduler </title>
   <style>
     body {
@@ -63,6 +68,55 @@
       right : 0;
     }
 
+    .bs-example {
+	font-family: sans-serif;
+	position: relative;
+	margin: 100px;
+}
+.typeahead, .tt-query, .tt-hint {
+	border: 2px solid #CCCCCC;
+	border-radius: 8px;
+	font-size: 22px; /* Set input font size */
+	height: 30px;
+	line-height: 30px;
+	outline: medium none;
+	padding: 8px 12px;
+	width: 396px;
+}
+.typeahead {
+	background-color: #FFFFFF;
+}
+.typeahead:focus {
+	border: 2px solid #0097CF;
+}
+.tt-query {
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+}
+.tt-hint {
+	color: #999999;
+}
+.tt-menu {
+	background-color: #FFFFFF;
+	border: 1px solid rgba(0, 0, 0, 0.2);
+	border-radius: 8px;
+	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+	margin-top: 12px;
+	padding: 8px 0;
+	width: 422px;
+}
+.tt-suggestion {
+	font-size: 22px;  /* Set suggestion dropdown font size */
+	padding: 3px 20px;
+}
+.tt-suggestion:hover {
+	cursor: pointer;
+	background-color: #0097CF;
+	color: #FFFFFF;
+}
+.tt-suggestion p {
+	margin: 0;
+}
+
   </style>
   <script type="text/javascript">
 
@@ -70,6 +124,7 @@
 
  //set up calendar after document is ready
   $( document ).ready(function() {
+      //set up calendar
       calendar = $("#calendar").calendar({
         tmpl_path: "./tmpls/",
         format12: true,
@@ -83,6 +138,27 @@
       }); //end of calendar
       $('.cal-cell').unbind("dblclick");
       $("*[data-cal-date]").unbind("click");
+
+      //set up autocomplete
+      var congId = 1; //change this later
+      var url = "http://localhost:8080/api/congregation/" + congId + "/publishers";
+      $.ajax({
+        url: url,
+        type: 'GET',
+        dataType: 'json',
+        async: false
+      }).done(function(data) {
+        var publishers = [];
+        var i = 0;
+        for(i = 0; i < data.length; i++){
+          publishers[i] = data[i].firstName + " " + data[i].lastName;
+        }
+
+        autocomplete(document.getElementById("minSchoolPubNameInput"), publishers);
+        autocomplete(document.getElementById("minSchoolAssistantNameInput"), publishers);
+        autocomplete(document.getElementById("weekdayPublisherNameInput"), publishers);
+      });
+
   });
 
    function updateAssignments(assignmentType){
@@ -223,11 +299,12 @@
 
                 <!-- Modal body -->
                 <div class="modal-body" style="height: 370px">
-                  <form id="minSchoolAssignmentForm" class="form-horizontal" >
+                  <form id="minSchoolAssignmentForm" class="form-horizontal" autocomplete="off" >
+
                     <div class="form-group">
                       <label class="col-xs-3 control-label">Name:</label>
                       <div class="col-xs-9" style="padding-right: 50px">
-                        <input id="minSchoolPubNameInput" class="form-control" type="text" placeholder="姓名" required>
+                        <input id="minSchoolPubNameInput" type="text" class="form-control" placeholder="姓名" required>
                       </div>
                     </div>
 
