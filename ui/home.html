@@ -161,13 +161,14 @@
 
   });
 
-   function updateAssignments(assignmentType){
+   function updateAssignments(assignmentType, congId){
     if(assignmentType === undefined)
       assignmentType = "";
 
     var assignments = new Array();
+    congId = 1;
 
-    var url = "http://localhost:8080/scheduler-service/api/1/assignments?assignmentType=" + assignmentType; //change congregation id later
+    var url = "http://localhost:8080/api/" + congId + "/assignments?assignmentType=" + assignmentType; //change congregation id later
     $.ajax({
       url: url,
       type: 'GET',
@@ -449,9 +450,6 @@
 
                       })
                     </script>
-                  </div>
-                  <div class="pull-right">
-                    <button id="clearAll" class="btn btn-danger">clear all</button>
                   </div>
                 </div>
                 </form>
