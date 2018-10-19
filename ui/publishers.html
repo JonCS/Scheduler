@@ -123,7 +123,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h3 class="modal-title">Publisher Information</h3>
               </div>
-              <div class="modal-body" style="height: 370px">
+              <div class="modal-body">
                 <form id="addPublisherForm" class="form-horizontal">
                   <div class="form-group">
                     <label class="col-xs-3 control-label">First Name:</label>
@@ -213,16 +213,15 @@
                     })
                   </script>
                 </div>
-                <div id="button-row" class="pull-right">
-                  <button id="clearAll" class="btn btn-default btn-danger" type="submit">clear all</button>
-                </div>
               </div>
               </form>
             </div>
           </div>
         </div>
-        <div id='publisherList' class="col-xs-9">
-          <!-- List of all publishers here -->
+        <div class="col-xs-9">
+          <div class="panel-group" id='publisherList'>
+            <!-- List of all publishers here -->
+          </div>
         </div>
       </div>
       <script type="text/javascript">
@@ -253,34 +252,37 @@
               type = JSON.stringify(type);
               type = type.split(",");
               for (j = 0; j < type.length; j++) {
-                types += "<li>" + type[j].replace(/[\W_]+/g," ").toLowerCase() + "</li>";
+                types += "<li>" + type[j].replace(/[\W_]+/g, " ").toLowerCase() + "</li>";
               }
               types += "</ul>";
               var publisherCollapse =
-                `<div class="panel-group">
+                `
                     <div class="panel panel-default">
                       <div class="panel-heading">
                         <h4 class="panel-title">
-                          <a data-toggle="collapse" href="#collapse` + i + `">`
-                          + `<div class='form-inline'>
+                          <a data-toggle="collapse" href="#collapse` + i +
+                `">` +
+                `<div class='form-inline'>
                               <span id='publisherHeaderName' class='nowrap'>` + name + `</span>
-                              <span class='pull-right nowrap'>#` + (i + 1) + `</span>
+                              <span class='pull-right nowrap'>#` + (i + 1) +
+                `</span>
                              </div>
                           </a>
                         </h4>
                       </div>
-                    <div id="collapse` + i + `" class="panel-collapse collapse">
+                    <div id="collapse` + i +
+                `" class="panel-collapse collapse">
                     <div class="panel-body">
                     <p id='publisherHeaderContent'>Age: ` + age +
-                    `<br>Type: ` + types +
-                    `</p>Notes: ` + notes +
+                `<br>Type: ` + types +
+                `</p>Notes: ` + notes +
                 `</div>
                     <div class="panel-footer">
-                      <button id="editPublisherButton" class="btn btn-info">edit publisher</button>
+                      <button id="editPublisherButton" class="btn btn-warning">edit</button>
                     </div>
                   </div>
                 </div>
-                </div>`;
+                `;
 
               $('#publisherList').append(publisherCollapse);
             }
