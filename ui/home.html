@@ -249,6 +249,7 @@
           <script>
             $('#min_school_anchor').on('click', function (e) {
               $('#createAssignmentButton').attr('data-target','#minSchoolAssignmentSlipModal');
+              $('#createAssignmentButton').html(' Create Ministry School Assignment ');
             });
           </script>
 
@@ -256,6 +257,7 @@
           <script>
             $('#weekday_anchor').on('click', function (e) {
               $('#createAssignmentButton').attr('data-target','#weekdayAssignmentSlipModal');
+              $('#createAssignmentButton').html(' Create SBCC Assignment ');
             });
           </script>
 
@@ -284,7 +286,7 @@
 
       <div class="col-xs-9">
         <div>
-          <button id="createAssignmentButton" type="button" class="btn btn-info btn-md" data-toggle="modal" data-target="#minSchoolAssignmentSlipModal"> Create Assignment</button>
+          <button id="createAssignmentButton" type="button" class="btn btn-info btn-md" data-toggle="modal" data-target="#minSchoolAssignmentSlipModal"> Create Ministry School Assignment</button>
 
           <!-- Assignment Slip Modal -->
           <div id="minSchoolAssignmentSlipModal" class="modal fade" role="dialog">
