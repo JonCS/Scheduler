@@ -108,7 +108,7 @@
           <button type="button" class="btn btn-info btn-md" data-toggle="modal" data-target="#addPublisherModal">Add Publisher</button>
           <ul class="nav nav-pills nav-stacked" data-spy="affix" data-offset-top="205">
             <h3>Sort by:</h3>
-            <li class="active"><a href="#sortByRecentAssignment" onclick="sortPublishersBy('most recent assignment')">Most Recent Assignment</a></li>
+            <li class="active"><a href="#sortByRecentAssignment" onclick="sortPublishersBy('recent assignments')">Recent Assignments</a></li>
             <li><a href="#sortByFirstName" onclick="sortPublishersBy('first name')">First Name</a></li>
             <li><a href="#sortByLastName" onclick="sortPublishersBy('last name')">Last Name</a></li>
             <li><a href="#sortByAge" onclick="sortPublishersBy('age')">Age</a></li>
@@ -233,8 +233,9 @@
               <th>Name</th>
               <th>Age</th>
               <th>Type</th>
-              <th>Most Recent Assignment</th>
+              <th>Recent Assignments</th>
               <th>Notes</th>
+              <th>Options</th>
             </tr>
           </table>
         </div>
@@ -278,7 +279,9 @@
                 <td>` + 'NEED RECENT ASSIGNMENTS HERE' +
                 `</td>
                 <td>` + notes + `</td>
-                <button id="editPublisher` + i + `" class="btn btn-info">edit</button>
+                <td>
+                <button id="editPublisher` + i + `" class="btn btn-warning">edit</button>
+                </td>
               </tr>
               `;
 
@@ -309,8 +312,8 @@
               // Check if the two rows should switch place:
               if (dir == "asc") {
                 switch (type) {
-                  case 'most recent assignment':
-                    //TODO
+                  case 'recent assignments':
+                    console.log("not implemented yet");
                     break;
                   case 'first name':
                     /* Get the two elements you want to compare,
@@ -322,7 +325,6 @@
                     if (x > y) {
                       // If so, mark as a switch and break the loop:
                       shouldSwitch = true;
-                      break;
                     }
                     break;
                   case 'last name':
@@ -335,7 +337,6 @@
                     if (x > y) {
                       // If so, mark as a switch and break the loop:
                       shouldSwitch = true;
-                      break;
                     }
                     break;
                   case 'age':
@@ -343,17 +344,18 @@
                     one from current row and one from the next: */
                     x = rows[i].getElementsByTagName("TD")[1];
                     y = rows[i + 1].getElementsByTagName("TD")[1];
-                    if (x.innerHTML > y.innerHTML) {
+                    if (Number(x.innerHTML) > Number(y.innerHTML)) {
                       // If so, mark as a switch and break the loop:
                       shouldSwitch = true;
-                      break;
+                    } else if (Number(x.innerHTML) == Number(y.innerHTML)) {
+                      switchcount++;
                     }
                     break;
                 }
               } else if (dir == "desc") {
                 switch (type) {
-                  case 'most recent assignment':
-                    //
+                  case 'recent assignments':
+                    console.log("not implemented yet");
                     break;
                   case 'first name':
                     /* Get the two elements you want to compare,
@@ -365,7 +367,6 @@
                     if (x < y) {
                       // If so, mark as a switch and break the loop:
                       shouldSwitch = true;
-                      break;
                     }
                     break;
                   case 'last name':
@@ -378,7 +379,6 @@
                     if (x < y) {
                       // If so, mark as a switch and break the loop:
                       shouldSwitch = true;
-                      break;
                     }
                     break;
                   case 'age':
@@ -386,14 +386,15 @@
                     one from current row and one from the next: */
                     x = rows[i].getElementsByTagName("TD")[1];
                     y = rows[i + 1].getElementsByTagName("TD")[1];
-                    if (x.innerHTML < y.innerHTML) {
+                    if (Number(x.innerHTML) < Number(y.innerHTML)) {
                       // If so, mark as a switch and break the loop:
                       shouldSwitch = true;
-                      break;
+                    } else if (Number(x.innerHTML) == Number(y.innerHTML)) {
+                      switchcount++;
                     }
                     break;
                 }
-              }
+            }
             if (shouldSwitch) {
               /* If a switch has been marked, make the switch
               and mark that a switch has been done: */
