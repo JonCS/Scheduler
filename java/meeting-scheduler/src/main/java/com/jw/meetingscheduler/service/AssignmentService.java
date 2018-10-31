@@ -3,6 +3,7 @@ package com.jw.meetingscheduler.service;
 import java.util.List;
 import java.util.Set;
 
+import com.jw.meetingscheduler.dto.AssignmentPublishersDto;
 import com.jw.meetingscheduler.model.Assignment;
 import com.jw.meetingscheduler.model.MeetingAssignment;
 import com.jw.meetingscheduler.model.MinistrySchoolAssignment;
@@ -31,6 +32,8 @@ public interface AssignmentService {
 	
 	public void reassignMinistrySchoolAssignment(Long newPublisherId, Long newAssistantId, Long assignmentId);
 	
-	public void deleteAssignment(Long publisherId, Long assignmentId);
+	public Assignment deleteAssignment(Long assignmentId);
+
+	public AssignmentPublishersDto getAssignmentPublishers(Long assignmentId);
 	
 }

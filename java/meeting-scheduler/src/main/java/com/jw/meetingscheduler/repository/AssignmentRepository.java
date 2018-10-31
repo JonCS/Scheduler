@@ -26,4 +26,7 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long>{
 	
 	@Query(value = "select a from Assignment a where a.publisher.congregation.id = ?1")
 	public List<Assignment> getByCongregation_Id(Long congregationId);
+	
+	@Query("select a from Assignment a where a.assignmentType =?1 and year(a.date) = ?2 and month(a.date) = ?3 and day(a.date) = ?4")
+	public List<Assignment> getByAssignment_TypeAndYearAndMonthAndDay(String assignmentType, int year, int month, int day);
 }
