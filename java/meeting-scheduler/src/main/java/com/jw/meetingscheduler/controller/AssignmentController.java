@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jw.meetingscheduler.dto.AssignmentPublishersDto;
 import com.jw.meetingscheduler.model.Assignment;
 import com.jw.meetingscheduler.model.MeetingAssignment;
 import com.jw.meetingscheduler.model.MinistrySchoolAssignment;
@@ -31,7 +32,7 @@ public class AssignmentController {
 	}
 	
 	@RequestMapping(value = "/api/assignment/{assignmentId}", method = RequestMethod.GET)
-	public Assignment getPublisherAssignment(@PathVariable("assignmentId") Long assignmentId){
+	public Assignment getAssignment(@PathVariable("assignmentId") Long assignmentId){
 		return assignmentService.getAssignment(assignmentId);
 	}
 	
@@ -54,6 +55,11 @@ public class AssignmentController {
 			@PathVariable("calendarDay") int day,
 			@PathVariable("calendarYear") int year){
 		return assignmentService.getAssignmentsByDay(congregationId, month, day, year);
+	}
+	
+	@RequestMapping(value = "/api/assignment/{assignmentId}/publishers", method = RequestMethod.GET)
+	public AssignmentPublishersDto getPublishersForAssignment(@PathVariable("assignmentId") Long assignmentId) {
+		return assignmentService.getAssignmentPublishers(assignmentId);
 	}
 	
 	//POST APIS
@@ -103,10 +109,9 @@ public class AssignmentController {
 	
 	//DELETE APIs
 	
-	@RequestMapping(value = "/api/publisher/{publisherId}/assignment/{assignmentId}", method = RequestMethod.DELETE)
-	public void deleteAssignment(@PathVariable("publisherId") Long publisherId, 
-			@PathVariable("assignmentId") Long assignmentId) {
-		assignmentService.deleteAssignment(publisherId, assignmentId);
+	@RequestMapping(value = "/api/assignment/{assignmentId}", method = RequestMethod.DELETE)
+	public Assignment deleteAssignment(@PathVariable("assignmentId") Long assignmentId) {
+		return assignmentService.deleteAssignment(assignmentId);
 	}
 
 }

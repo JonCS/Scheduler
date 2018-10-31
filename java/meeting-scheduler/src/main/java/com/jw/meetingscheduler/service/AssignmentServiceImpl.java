@@ -1,6 +1,8 @@
 package com.jw.meetingscheduler.service;
 
 import java.sql.Date;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -8,6 +10,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jw.meetingscheduler.dto.AssignmentPublishersDto;
 import com.jw.meetingscheduler.exception.AssignmentDoesNotExistException;
 import com.jw.meetingscheduler.model.Assignment;
 import com.jw.meetingscheduler.model.Congregation;
@@ -50,7 +53,15 @@ public class AssignmentServiceImpl implements AssignmentService {
 		
 		//fix date issue
 		fixDate(meetingAssignment);
-		
+		LocalDate localDate = meetingAssignment.getDate().toLocalDate();
+
+		if(assignmentRepository.getByAssignment_TypeAndYearAndMonthAndDay(meetingAssignment.getAssignmentType(), localDate.getYear(), localDate.getMonthValue(), localDate.getDayOfMonth()).size() != 0) {
+			MeetingAssignment existing = (MeetingAssignment) assignmentRepository.getByAssignment_TypeAndYearAndMonthAndDay(meetingAssignment.getAssignmentType(), localDate.getYear(), localDate.getMonthValue(), localDate.getDayOfMonth()).get(0);
+			CustomUtils.copyProperties(meetingAssignment, existing);
+			assignmentRepository.saveAndFlush(existing);
+			return assignmentRepository.saveAndFlush(existing);
+		}
+			
 		return assignmentRepository.saveAndFlush(meetingAssignment);
 	}
 
@@ -67,6 +78,13 @@ public class AssignmentServiceImpl implements AssignmentService {
 		
 		//fix date issue
 		fixDate(minSchoolAssignment);
+		LocalDate localDate = minSchoolAssignment.getDate().toLocalDate();
+		if(assignmentRepository.getByAssignment_TypeAndYearAndMonthAndDay(minSchoolAssignment.getAssignmentType(), localDate.getYear(), localDate.getMonthValue(), localDate.getDayOfMonth()).size() != 0) {
+			MinistrySchoolAssignment existing = (MinistrySchoolAssignment) assignmentRepository.getByAssignment_TypeAndYearAndMonthAndDay(minSchoolAssignment.getAssignmentType(), localDate.getYear(), localDate.getMonthValue(), localDate.getDayOfMonth()).get(0);
+			CustomUtils.copyProperties(minSchoolAssignment, existing);
+			assignmentRepository.saveAndFlush(existing);
+			return assignmentRepository.saveAndFlush(existing);
+		}
 		
 		return assignmentRepository.saveAndFlush(minSchoolAssignment);
 	}
@@ -80,6 +98,7 @@ public class AssignmentServiceImpl implements AssignmentService {
 			fixDate(meetingAssignment);
 			
 			CustomUtils.copyProperties(meetingAssignment, existing);
+			existing.setPublisher(publisherService.getPublisherById(publisherId));
 			
 			assignmentRepository.saveAndFlush(existing);
 		}
@@ -98,9 +117,10 @@ public class AssignmentServiceImpl implements AssignmentService {
 			
 			CustomUtils.copyProperties(minSchoolAssignment, existing);
 			
+			existing.setPublisher(publisherService.getPublisherById(publisherId));
 			if(assistantId != null) {
 				Publisher assistant = publisherService.getPublisherById(assistantId);
-				minSchoolAssignment.setAssistant(assistant);
+				existing.setAssistant(assistant);
 			}
 			
 			assignmentRepository.saveAndFlush(existing);
@@ -128,12 +148,14 @@ public class AssignmentServiceImpl implements AssignmentService {
 	}
 
 	@Override
-	public void deleteAssignment(Long publisherId, Long assignmentId) {
-		if(!assignmentRepository.existsById(assignmentId) || 
-				!assignmentRepository.findById(assignmentId).get().getPublisher().getId().equals(publisherId))
+	public Assignment deleteAssignment( Long assignmentId) {
+		if(!assignmentRepository.existsById(assignmentId))
 			throw new AssignmentDoesNotExistException("Assignment with Id " + assignmentId + " does not exist");
 		
+		Assignment assignment = getAssignment(assignmentId);
 		assignmentRepository.deleteById(assignmentId);
+		
+		return assignment;
 	}
 	
 	private void fixDate(Assignment assignment) {
@@ -163,5 +185,17 @@ public class AssignmentServiceImpl implements AssignmentService {
 		else
 			return assignmentRepository.getByCongregation_Id(congregationId);
 		
+	}
+
+	@Override
+	public AssignmentPublishersDto getAssignmentPublishers(Long assignmentId) {
+		AssignmentPublishersDto assignmentPublishersDto = new AssignmentPublishersDto();
+		
+		Assignment assignment = getAssignment(assignmentId);
+		assignmentPublishersDto.setPublisher(assignment.getPublisher());
+		if(assignment instanceof MinistrySchoolAssignment)
+			assignmentPublishersDto.setAssistant(((MinistrySchoolAssignment)assignment).getAssistant());
+			
+		return assignmentPublishersDto;
 	}
 }
