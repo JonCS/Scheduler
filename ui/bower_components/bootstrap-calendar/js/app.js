@@ -19,6 +19,7 @@
 	      async: false
 	    }).done(function(data){
 	      //update assignments
+	      console.log(data);
 	      var i;
 	      for(i = 0; i < data.length; i++) {
 	        var a = data[i];
@@ -27,15 +28,20 @@
 	        var startDate = new Date(a.date);
 	        startDate = Date.parse(new Date(startDate.getTime() - startDate.getTimezoneOffset() * -60000));
 
+					var eventType = "event-important"
+	        if(a.studyPoint === null || a.studyPoint === undefined)
+	          eventType = "event-info";
+
 	        //create assignment object and add it to array
 	        var assignment = {
 	          id: a.id,
 	          title: a.assignmentType,
 	          url: "www.example.com",
-	          class: "event-important",
+	          class: eventType,
 	          start: startDate,
 	          end: startDate + 1,
-	          description: "Test description"
+	          description: "<b>Test description</b>",
+						info: a
 	        };
 
 	        assignments[i] = assignment;
