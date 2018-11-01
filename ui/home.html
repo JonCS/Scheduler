@@ -192,7 +192,8 @@
           class: "event-important",
           start: startDate,
           end: startDate + 1,
-          description: "Test description"
+          description: "Test description",
+          info: a
         };
 
         assignments[i] = assignment;
@@ -251,6 +252,9 @@
 
           //HTTP method - POST or PUT
           document.getElementById('minSchoolAssignmentSlipModal').setAttribute('data-assignment-id', assignmentId);
+
+          //change create button to save button
+          $('#createMinSchoolAssignmentButton').html('save');
         }
         else {
           $('#weekdayAssignmentSlipModal').modal('toggle');
@@ -262,6 +266,9 @@
 
           //HTTP method - POST or PUT
           document.getElementById('weekdayAssignmentSlipModal').setAttribute('data-assignment-id', assignmentId);
+
+          //change create button to save button
+          $('#createWeekdayAssignmentButton').html('save');
         }
       });
 
@@ -540,6 +547,7 @@
           $('#minSchoolAssignmentSlipModal').on('hidden.bs.modal', function () {
             document.getElementById('minSchoolAssignmentSlipModal').setAttribute('data-assignment-id', -10);
             $("#minSchoolAssignmentForm").trigger('reset');
+            $('#createMinSchoolAssignmentButton').html('create');
           })
           </script>
 
@@ -703,6 +711,7 @@
             $('#weekdayAssignmentSlipModal').on('hidden.bs.modal', function () {
               document.getElementById('weekdayAssignmentSlipModal').setAttribute('data-assignment-id', -10);
               $("#createWeekdayAssignmentForm").trigger('reset');
+              $('#createWeekdayAssignmentButton').html('create');
             })
           </script>
 
@@ -747,6 +756,11 @@
               </div>
             </div>
           </div>
+
+          <script>
+            $(document).on('show.bs.modal','#events-modal', function () {
+            })
+          </script>
         </div>
       </div>
     </div>
