@@ -1,13 +1,44 @@
 <% 	event.date_start = new Date(parseInt(event.start));
 	event.date_end = new Date(parseInt(event.end)); %>
 <div id = "event-meta" class  = "pull-right" data-assignment-id='<%= event.id %>'>
-    <span><%= event.date_start.getDate() %> <%= calendar.locale["m" + event.date_start.getMonth()] %> <%= event.date_start.getFullYear() %> <i class = "icon-time"></i></span><br />
-
+    <span><h4><%= event.date_start.getDate() %> <%= calendar.locale["m" + event.date_start.getMonth()] %> <%= event.date_start.getFullYear() %> <i class = "icon-time"></i></h4></span><br />
 </div>
 
 <div style = "margin: 10px 0">
-	<span>
+	<h4><b>Assignment Info</b></h4>
+	<ul>
+		<div id="event-modal-publisher"></div>
+		<div id="event-modal-assistant"></div>
+		<div id="event-modal-sp" data-value="<%=event.info.studyPoint %>"></div>
+		<div id="event-modal-duration" data-value="<%=event.info.duration %>"></div>
+		<div id="event-modal-notes" data-value="<%=event.info.notes %>"></div>
+	</ul>
 
-    <a href = "<%= event.url %>" class = "btn btn-primary"><i class = "icon-calendar"></i> More info</a>
-	</span>
+	<script>
+		//retrieve publisher and assistant
+		var url = "http://localhost:8080/api/assignment/" + $('#event-meta').attr('data-assignment-id') + "/publishers";
+		$.ajax({
+			url: url,
+			type: 'GET',
+			dataType: 'json'
+		}).done(function(data){
+			$('#event-modal-publisher').html("<li><h4>Publisher: " + data.publisher.firstName + " " + data.publisher.lastName + "<h4></li>");
+			if(data.assistant !== null){
+				$('#event-modal-assistant').html("<li><h4>Assistant: " + data.assistant.firstName + " " + data.assistant.lastName + "<h4></li>");
+			}
+		})
+
+		if(document.getElementById('event-modal-sp').getAttribute('data-value')){
+			document.getElementById('event-modal-sp').innerHTML = "<li><h4>Study Point: " + document.getElementById('event-modal-sp').getAttribute('data-value')
+				+ "</h4></li>";
+		}
+		if(document.getElementById('event-modal-duration').getAttribute('data-value')){
+			document.getElementById('event-modal-duration').innerHTML = "<li><h4>Duration: " + document.getElementById('event-modal-duration').getAttribute('data-value')
+				+ " minutes </h4></li>";
+		}
+		if(document.getElementById('event-modal-notes').getAttribute('data-value')){
+			document.getElementById('event-modal-notes').innerHTML = "<li><h4>Notes: " + document.getElementById('event-modal-notes').getAttribute('data-value')
+				+ "</h4></li>";
+		}
+	</script>
 </div>
