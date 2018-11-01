@@ -69,10 +69,10 @@
     }
 
     .bs-example {
-	font-family: sans-serif;
-	position: relative;
-	margin: 100px;
-}
+      	font-family: sans-serif;
+      	position: relative;
+      	margin: 100px;
+    }
 .typeahead, .tt-query, .tt-hint {
 	border: 2px solid #CCCCCC;
 	border-radius: 8px;
@@ -733,15 +733,21 @@
                   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                   <h3 class="modal-title">Event</h3>
                 </div>
-                <div class="modal-body" >
+                <div class="modal-body">
+                  <p>test</p>
                 </div>
                 <div class="modal-footer">
                   <div class="pull-left">
-                    <button id="editAssignmentButton" class="btn btn-success" onclick="editAssignment(document.getElementById('event-meta').getAttribute('data-assignment-id'))">Edit Assignment</button>
+                    <button id="editAssignmentButton" class="btn btn-success"
+                    onclick="editAssignment(document.getElementById('event-meta').getAttribute('data-assignment-id'))">
+                    Edit Assignment
+                  </button>
                   </div>
                   <div class="pull-right">
-                    <button id="deleteAssignmentButton" class="btn btn-danger" onclick="deleteAssignment(document.getElementById('event-meta').getAttribute('data-assignment-id'))">Delete Assignment</button>
-
+                    <button id="deleteAssignmentButton" class="btn btn-danger"
+                    onclick="deleteAssignment(document.getElementById('event-meta').getAttribute('data-assignment-id'))">
+                    Delete Assignment
+                  </button>
                   </div>
                 </div>
               </div>
