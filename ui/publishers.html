@@ -74,6 +74,87 @@
     }
     tr:hover {background-color: #f5f5f5;}
   </style>
+  <script>
+  function getPublishers(congId) { //should be named getCongregationPublishers
+    congId = 1; // TODO change this later
+    var url = "http://localhost:8080/api/congregation/" + congId + "/publishers";
+
+    $.ajax({
+      url: url,
+      type: 'GET',
+      dataType: 'json'
+    }).done(function(data) {
+      //clear initial entries
+      $('#publisherList').empty();
+
+      for (i = 0; i < data.length; i++) {
+        var name = data[i].firstName.trim() + " " + data[i].lastName.trim();
+        var age = data[i].age;
+        //var baptismDate = data[i].baptismDate;
+        var type = data[i].publisherTypes;
+        var notes = data[i].notes;
+        if (notes == null) {
+          notes = 'none';
+        };
+
+        var types = "<ul>";
+        var j;
+        type = JSON.stringify(type);
+        type = type.split(",");
+        for (j = 0; j < type.length; j++) {
+          types += "<li>" + type[j].replace(/[\W_]+/g, " ").toLowerCase() + "</li>";
+        }
+        types += "</ul>";
+        var tableEntry = `
+        <tr>
+          <td>` + name + `</td>
+          <td>` + age + `</td>
+          <td>` + types + `</td>
+          <td>` + 'NEED RECENT ASSIGNMENTS HERE' +
+          `</td>
+          <td>` + notes + `</td>
+          <td>
+          <button id="editPublisherButton` + i + `" class="btn btn-warning" data-publisher-id=` + data[i].id + `>edit</button>
+          </td>
+        </tr>
+        `;
+
+        $('#publisherList').append(tableEntry);
+
+        //add edit button functionality
+        $('#editPublisherButton' + i).click(function(){
+          //open publisher modal and fill in fields
+          var publisherId = $(this).attr('data-publisher-id');
+          var url = "http://localhost:8080/api/publisher/" + publisherId;
+
+          $('#addPublisherModal').modal('toggle');
+          $.ajax({
+            url: url,
+            type: 'GET',
+            dataType: 'json'
+          }).done(function(data){
+            $('#firstNameInput').val(data.firstName);
+            $('#lastNameInput').val(data.lastName);
+            $('#ageInput').val(data.age);
+            $('#notesInput').val(data.notes);
+            $('#addPublisherButton').html('save');
+
+            var index = 0;
+            for(index = 0; index < data.publisherTypes.length; index++){
+              $('input:checkbox').each(function() {
+                if($(this).attr('value') === data.publisherTypes[index])
+                  $(this).prop("checked", true);
+              });
+            }
+
+            //set modal publisher id
+            $('#addPublisherModal').attr('data-publisher-id', publisherId);
+          });
+        })
+      }
+    })
+  };
+  </script>
 </head>
 
 <body>
@@ -120,7 +201,7 @@
             </script>
           </ul>
           <!-- Add Publisher Modal -->
-          <div id="addPublisherModal" class="modal fade" role="dialog">
+          <div id="addPublisherModal" class="modal fade" role="dialog" data-publisher-id="-1">
             <div class="modal-dialog">
               <!-- Modal Content -->
               <div class="modal-content">
@@ -189,14 +270,28 @@
                 </div>
                 <div class="modal-footer">
                   <div id="button-row" class="pull-left">
-                    <button id="addPublisherButton" class="btn btn-success" type="submit">add</button>
+                    <button id="addPublisherButton" class="btn btn-success" type="submit">add publisher</button>
                     <script type="text/javascript">
-                      $('#addPublisherForm').on('submit', function(e) {
+                      $('#addPublisherButton').on('click', function(e) {
                         e.preventDefault();
+                        //verify that first and last name aren't empty
+                        var publisherId = parseInt($('#addPublisherModal').attr('data-publisher-id'));
+                        if($('#firstNameInput').val() === undefined || $('#firstNameInput').val().trim().length === 0){
+                          alert("First name can't be empty");
+                          return;
+                        }
+                        if($('#lastNameInput').val() === undefined || $('#lastNameInput').val().trim().length === 0){
+                          alert("Last name can't be empty");
+                          return;
+                        }
 
                         //construct URL
                         var congId = 1; //change this later
                         var url = "http://localhost:8080/api/congregation/" + congId + "/publisher";
+
+                        var httpMethod = publisherId > -1 ? 'PUT' : 'POST';
+                        if(publisherId > -1)
+                          url += "/" + publisherId;
 
                         //create publisher based on input
                         var pubTypes = $('input:checkbox:checked').map(function() {
@@ -214,17 +309,17 @@
                         //AJAX call
                         $.ajax({
                           url: url,
-                          type: 'POST',
+                          type: httpMethod,
                           dataType: 'json',
                           contentType: "application/json; charset=utf-8",
                           data: JSON.stringify(publisher),
-                        }).done(function(data) {
+                        }).always(function(data) {
                           console.log("Successfully created publisher");
+                          getPublishers(1);
                         });
 
-                        //close modal
+                        //close modal and refresh
                         $('#addPublisherModal').modal('toggle');
-
                       })
                     </script>
                   </div>
@@ -250,54 +345,7 @@
         </div>
       </div>
       <script type="text/javascript">
-        function getPublishers(congId) { //should be named getCongregationPublishers
-          congId = 1; // TODO change this later
-          var url = "http://localhost:8080/api/congregation/" + congId + "/publishers";
 
-          $.ajax({
-            url: url,
-            type: 'GET',
-            dataType: 'json',
-            async: false
-          }).done(function(data) {
-            //console.log(data);
-
-            for (i = 0; i < data.length; i++) {
-              var name = data[i].firstName.trim() + " " + data[i].lastName.trim();
-              var age = data[i].age;
-              //var baptismDate = data[i].baptismDate;
-              var type = data[i].publisherTypes;
-              var notes = data[i].notes;
-              if (notes == null) {
-                notes = 'none';
-              };
-
-              var types = "<ul>";
-              var j;
-              type = JSON.stringify(type);
-              type = type.split(",");
-              for (j = 0; j < type.length; j++) {
-                types += "<li>" + type[j].replace(/[\W_]+/g, " ").toLowerCase() + "</li>";
-              }
-              types += "</ul>";
-              var tableEntry = `
-              <tr>
-                <td>` + name + `</td>
-                <td>` + age + `</td>
-                <td>` + types + `</td>
-                <td>` + 'NEED RECENT ASSIGNMENTS HERE' +
-                `</td>
-                <td>` + notes + `</td>
-                <td>
-                <button id="editPublisher` + i + `" class="btn btn-warning">edit</button>
-                </td>
-              </tr>
-              `;
-
-              $('#publisherList').append(tableEntry);
-            }
-          })
-        };
 
         // Populate table with Publishers
         //TODO replace 1 with congregation Id later on...
@@ -425,9 +473,12 @@
           }
         }
 
-        function updatePublisher(publisherId) {
-
-        }
+        //reset id when modal is closed
+        $('#addPublisherModal').on('hidden.bs.modal', function () {
+          $('#addPublisherModal').attr('data-publisher-id', -10);
+          $("#addPublisherForm").trigger('reset');
+          $('#addPublisherButton').html('add publisher');
+        })
       </script>
 </body>
 
