@@ -17,12 +17,11 @@
 
   <!-- Bootstrap Date-Picker Plugin -->
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css" />
 
   <!-- Autocomplete -->
   <script type="text/javascript" src="./autocomplete/autocomplete.js"></script>
-  <link rel="stylesheet" href="./autocomplete/autocomplete.css"/>
-
+  <link rel="stylesheet" href="./autocomplete/autocomplete.css" />
 
   <title> Congregation Scheduler </title>
   <style>
@@ -73,6 +72,7 @@
       	position: relative;
       	margin: 100px;
     }
+    
 .typeahead, .tt-query, .tt-hint {
 	border: 2px solid #CCCCCC;
 	border-radius: 8px;
@@ -119,18 +119,17 @@
 
   </style>
   <script type="text/javascript">
+    var calendar;
 
-  var calendar;
-
- //set up calendar after document is ready
-  $( document ).ready(function() {
+    //set up calendar after document is ready
+    $(document).ready(function () {
       //set up calendar
       calendar = $("#calendar").calendar({
         tmpl_path: "./tmpls/",
         format12: true,
         modal: "#events-modal",
         modal_type: "template",
-        modal_title: function(e) {
+        modal_title: function (e) {
           return e.title
         },
         events_source: updateAssignments()
@@ -147,10 +146,10 @@
         type: 'GET',
         dataType: 'json',
         async: false
-      }).done(function(data) {
+      }).done(function (data) {
         var publishers = [];
         var i = 0;
-        for(i = 0; i < data.length; i++){
+        for (i = 0; i < data.length; i++) {
           publishers[i] = data[i].firstName + " " + data[i].lastName;
         }
 
@@ -159,134 +158,137 @@
         autocomplete(document.getElementById("weekdayPublisherNameInput"), publishers);
       });
 
-  });
-
-   function updateAssignments(assignmentType, congId){
-    if(assignmentType === undefined)
-      assignmentType = "";
-
-    var assignments = new Array();
-    congId = 1;
-
-    var url = "http://localhost:8080/api/" + congId + "/assignments?assignmentType=" + assignmentType; //change congregation id later
-    $.ajax({
-      url: url,
-      type: 'GET',
-      dataType: 'json',
-      async: false
-    }).done(function(data){
-      //update assignments
-      var i;
-      for(i = 0; i < data.length; i++) {
-        var a = data[i];
-
-        //get date
-        var startDate = new Date(a.date);
-        startDate = Date.parse(new Date(startDate.getTime() - startDate.getTimezoneOffset() * -60000));
-
-        //create assignment object and add it to array
-        var assignment = {
-          id: a.id,
-          title: a.assignmentType,
-          url: "www.example.com",
-          class: "event-important",
-          start: startDate,
-          end: startDate + 1,
-          description: "Test description",
-          info: a
-        };
-
-        assignments[i] = assignment;
-
-      }
-
-      $('.cal-cell').unbind("dblclick");
-      $("*[data-cal-date]").unbind("click");
     });
-    return assignments;
-  }
 
-  //reload assignments after assignment creation
-  function refreshCalendar(currentViewDate){
-    var replace_events = {
-      events_source : updateAssignments(),
-      day: currentViewDate
-    };
-    calendar.setOptions(replace_events);
-    calendar.view();
-  }
+    function updateAssignments(assignmentType, congId) {
+      if (assignmentType === undefined)
+        assignmentType = "";
 
-  function editAssignment(assignmentId){
-    $('#events-modal').modal('toggle'); //close window
+      var assignments = new Array();
+      congId = 1;
 
-    var url = "http://localhost:8080/api/assignment/" + assignmentId;
-    $.ajax({
-      url: url,
-      type: 'GET',
-      dataType: 'json'
-    }).done(function(data) {
-      url = "http://localhost:8080/api/assignment/" + assignmentId + "/publishers";
+      var url = "http://localhost:8080/api/" + congId + "/assignments?assignmentType=" + assignmentType; //change congregation id later
+      $.ajax({
+        url: url,
+        type: 'GET',
+        dataType: 'json',
+        async: false
+      }).done(function (data) {
+        //update assignments
+        var i;
+        for (i = 0; i < data.length; i++) {
+          var a = data[i];
+
+          //get date
+          var startDate = new Date(a.date);
+          startDate = Date.parse(new Date(startDate.getTime() - startDate.getTimezoneOffset() * -60000));
+
+          //create assignment object and add it to array
+          var assignment = {
+            id: a.id,
+            title: a.assignmentType,
+            url: "www.example.com",
+            class: "event-important",
+            start: startDate,
+            end: startDate + 1,
+            description: "Test description",
+            info: a
+          };
+
+          assignments[i] = assignment;
+
+        }
+
+        $('.cal-cell').unbind("dblclick");
+        $("*[data-cal-date]").unbind("click");
+      });
+      return assignments;
+    }
+
+    //reload assignments after assignment creation
+    function refreshCalendar(currentViewDate) {
+      var replace_events = {
+        events_source: updateAssignments(),
+        day: currentViewDate
+      };
+      calendar.setOptions(replace_events);
+      calendar.view();
+    }
+
+    function editAssignment(assignmentId) {
+      $('#events-modal').modal('toggle'); //close window
+
+      var url = "http://localhost:8080/api/assignment/" + assignmentId;
       $.ajax({
         url: url,
         type: 'GET',
         dataType: 'json'
-      }).done(function(publisherData) {
+      }).done(function (data) {
+        url = "http://localhost:8080/api/assignment/" + assignmentId + "/publishers";
+        $.ajax({
+          url: url,
+          type: 'GET',
+          dataType: 'json'
+        }).done(function (publisherData) {
 
-        //open appropriate modal and fill in form with assignment info
-        if(typeof data.studyPoint === "number"){
-          $('#minSchoolAssignmentSlipModal').modal('toggle');
-          $('#minSchoolPubNameInput').val(publisherData.publisher.firstName + " " + publisherData.publisher.lastName);
+          //open appropriate modal and fill in form with assignment info
+          if (typeof data.studyPoint === "number") {
+            $('#minSchoolAssignmentSlipModal').modal('toggle');
+            $('#minSchoolPubNameInput').val(publisherData.publisher.firstName + " " + publisherData.publisher.lastName);
 
-          if(publisherData.assistant !== null)
-            $('#minSchoolAssistantNameInput').val(publisherData.assistant.firstName + " " + publisherData.assistant.lastName);
-          else {
-            $('#minSchoolAssistantNameInput').val("");
+            if (publisherData.assistant !== null)
+              $('#minSchoolAssistantNameInput').val(publisherData.assistant.firstName + " " + publisherData.assistant
+                .lastName);
+            else {
+              $('#minSchoolAssistantNameInput').val("");
+            }
+            $('#minSchoolDateInput').val(data.date);
+            $('#studyPointInput').val(data.studyPoint);
+
+            $('input:radio').each(function () {
+              if ($(this).attr('value') === data.assignmentType)
+                $(this).prop("checked", true);
+            });
+
+            //HTTP method - POST or PUT
+            document.getElementById('minSchoolAssignmentSlipModal').setAttribute('data-assignment-id',
+              assignmentId);
+
+            //change create button to save button
+            $('#createMinSchoolAssignmentButton').html('save');
+          } else {
+            $('#weekdayAssignmentSlipModal').modal('toggle');
+            $('#weekdayPublisherNameInput').val(publisherData.publisher.firstName + " " + publisherData.publisher
+              .lastName);
+            $('#weekdayAssignmentNameInput').val(data.assignmentType);
+            $('#weekdayAssignmentDurationInput').val(data.duration);
+            $('#weekdayAssignmentDateInput').val(data.date);
+            $('#weekdayAssignmentNotesInput').val(data.notes);
+
+            //HTTP method - POST or PUT
+            document.getElementById('weekdayAssignmentSlipModal').setAttribute('data-assignment-id',
+              assignmentId);
+
+            //change create button to save button
+            $('#createWeekdayAssignmentButton').html('save');
           }
-          $('#minSchoolDateInput').val(data.date);
-          $('#studyPointInput').val(data.studyPoint);
+        });
 
-          $('input:radio').each(function() {
-            if($(this).attr('value') === data.assignmentType)
-              $(this).prop("checked", true);
-          });
-
-          //HTTP method - POST or PUT
-          document.getElementById('minSchoolAssignmentSlipModal').setAttribute('data-assignment-id', assignmentId);
-
-          //change create button to save button
-          $('#createMinSchoolAssignmentButton').html('save');
-        }
-        else {
-          $('#weekdayAssignmentSlipModal').modal('toggle');
-          $('#weekdayPublisherNameInput').val(publisherData.publisher.firstName + " " + publisherData.publisher.lastName);
-          $('#weekdayAssignmentNameInput').val(data.assignmentType);
-          $('#weekdayAssignmentDurationInput').val(data.duration);
-          $('#weekdayAssignmentDateInput').val(data.date);
-          $('#weekdayAssignmentNotesInput').val(data.notes);
-
-          //HTTP method - POST or PUT
-          document.getElementById('weekdayAssignmentSlipModal').setAttribute('data-assignment-id', assignmentId);
-
-          //change create button to save button
-          $('#createWeekdayAssignmentButton').html('save');
-        }
       });
 
-    });
+    }
 
-  }
+    function deleteAssignment(assignmentId) {
+      var url = "http://localhost:8080/api/assignment/" + assignmentId; //change congregation id later
+      $.ajax({
+        url: url,
+        type: 'DELETE'
+      }).done(function (data) {
+        refreshCalendar(data.date);
+      });
 
-  function deleteAssignment(assignmentId){
-    var url = "http://localhost:8080/api/assignment/" + assignmentId; //change congregation id later
-    $.ajax({
-      url: url,
-      type: 'DELETE'
-    }).done(function(data){
-      refreshCalendar(data.date);
-    });
-
-    $('#events-modal').modal('toggle'); //close window
-  }
+      $('#events-modal').modal('toggle'); //close window
+    }
   </script>
 </head>
 
@@ -307,7 +309,7 @@
         <li><a href="/ui/about.html">About</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+        <li><a href="/ui/login.html"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
       </ul>
     </div>
   </nav>
@@ -358,7 +360,8 @@
 
       <div class="col-xs-9">
         <div>
-          <button id="createAssignmentButton" type="button" class="btn btn-info btn-md" data-toggle="modal" data-target="#minSchoolAssignmentSlipModal"> Create Ministry School Assignment</button>
+          <button id="createAssignmentButton" type="button" class="btn btn-info btn-md" data-toggle="modal" data-target="#minSchoolAssignmentSlipModal">
+            Create Ministry School Assignment</button>
 
           <!-- Assignment Slip Modal -->
           <div id="minSchoolAssignmentSlipModal" class="modal fade" role="dialog" data-assignment-id="-1">
@@ -374,7 +377,7 @@
 
                 <!-- Modal body -->
                 <div class="modal-body" style="height: 370px">
-                  <form id="minSchoolAssignmentForm" class="form-horizontal" autocomplete="off" >
+                  <form id="minSchoolAssignmentForm" class="form-horizontal" autocomplete="off">
 
                     <div class="form-group">
                       <label class="col-xs-3 control-label">Name:</label>
@@ -402,10 +405,10 @@
                       </div>
 
                       <script type="text/javascript">
-                        var options={
-                            format: 'yyyy-mm-dd',
-                            todayHighlight: true,
-                            autoclose: true
+                        var options = {
+                          format: 'yyyy-mm-dd',
+                          todayHighlight: true,
+                          autoclose: true
                         };
 
                         $('.input-group.date').datepicker(options);
@@ -422,35 +425,35 @@
                     <h4>Assignment Type:</h4>
                     <div class="col-xs-6">
                       <div class="radio">
-                        <label for="bibleReading"><input id="bibleReading" type="radio"
-                          name="minSchoolAssignmentType" value="Bible Reading">Bible Reading</label>
+                        <label for="bibleReading"><input id="bibleReading" type="radio" name="minSchoolAssignmentType"
+                            value="Bible Reading">Bible Reading</label>
                       </div>
                       <div class="radio">
-                        <label for="initialVisit"><input id="initialVisit" type="radio"
-                          name="minSchoolAssignmentType" value="Initial Visit">Initial Visit</label>
+                        <label for="initialVisit"><input id="initialVisit" type="radio" name="minSchoolAssignmentType"
+                            value="Initial Visit">Initial Visit</label>
                       </div>
                       <div class="radio">
-                        <label for="firstReturnVisit"><input id="firstReturnVisit" type="radio"
-                          name="minSchoolAssignmentType" value="First Return Visit">First Return Visit</label>
+                        <label for="firstReturnVisit"><input id="firstReturnVisit" type="radio" name="minSchoolAssignmentType"
+                            value="First Return Visit">First Return Visit</label>
                       </div>
                       <div class="radio">
-                        <label for="secondReturnVisit"><input id="secondReturnVisit" type="radio"
-                          name="minSchoolAssignmentType" value="Second Return Visit">Second Return Visit</label>
+                        <label for="secondReturnVisit"><input id="secondReturnVisit" type="radio" name="minSchoolAssignmentType"
+                            value="Second Return Visit">Second Return Visit</label>
                       </div>
                     </div>
 
                     <div class="col-xs-6">
                       <div class="radio">
-                        <label for="thirdReturnVisit"><input id="thirdReturnVisit" type="radio"
-                          name="minSchoolAssignmentType" value="Third Return Visit">Third Return Visit</label>
+                        <label for="thirdReturnVisit"><input id="thirdReturnVisit" type="radio" name="minSchoolAssignmentType"
+                            value="Third Return Visit">Third Return Visit</label>
                       </div>
                       <div class="radio">
-                        <label for="bibleStudy"><input id="bibleStudy" type="radio"
-                          name="minSchoolAssignmentType" value="Bible Study">Bible Study</label>
+                        <label for="bibleStudy"><input id="bibleStudy" type="radio" name="minSchoolAssignmentType"
+                            value="Bible Study">Bible Study</label>
                       </div>
                       <div class="radio">
-                        <label for="bibleTalk"><input id="bibleTalk" type="radio"
-                          name="minSchoolAssignmentType" value="Bible Talk">Bible Talk</label>
+                        <label for="bibleTalk"><input id="bibleTalk" type="radio" name="minSchoolAssignmentType" value="Bible Talk">Bible
+                          Talk</label>
                       </div>
                     </div>
                 </div>
@@ -543,7 +546,7 @@
           </div>
 
           <script>
-          //reset id when modal is closed
+            //reset id when modal is closed
           $('#minSchoolAssignmentSlipModal').on('hidden.bs.modal', function () {
             document.getElementById('minSchoolAssignmentSlipModal').setAttribute('data-assignment-id', -10);
             $("#minSchoolAssignmentForm").trigger('reset');
@@ -568,7 +571,8 @@
                     <div class="form-group">
                       <label class="col-xs-3 control-label">Assignment Name:</label>
                       <div class="col-xs-9" style="padding-right: 50px">
-                        <input id="weekdayAssignmentNameInput" class="form-control" type="text" placeholder="任務" required>
+                        <input id="weekdayAssignmentNameInput" class="form-control" type="text" placeholder="任務"
+                          required>
                       </div>
                     </div>
 
@@ -597,7 +601,8 @@
                     <div class="form-group">
                       <label class="col-xs-3 control-label">Publisher Name:</label>
                       <div class="col-xs-9" style="padding-right: 50px">
-                        <input id="weekdayPublisherNameInput"class="form-control" type="text" placeholder="姓名" required>
+                        <input id="weekdayPublisherNameInput" class="form-control" type="text" placeholder="姓名"
+                          required>
                       </div>
                     </div>
 
@@ -611,10 +616,10 @@
                       </div>
 
                       <script type="text/javascript">
-                        var options={
-                            format: 'yyyy-mm-dd',
-                            todayHighlight: true,
-                            autoclose: true
+                        var options = {
+                          format: 'yyyy-mm-dd',
+                          todayHighlight: true,
+                          autoclose: true
                         };
 
                         $('.input-group.date').datepicker(options);
@@ -720,8 +725,9 @@
 
             <div class="pull-right form-inline">
               <div class="btn-group">
-                <button class="btn btn-primary" data-calendar-nav="prev"><< </button>
-                <button class="btn btn-info" data-calendar-nav="today">Today</button>
+                <button class="btn btn-primary" data-calendar-nav="prev">
+                  << </button> <button class="btn btn-info" data-calendar-nav="today">Today
+                </button>
                 <button class="btn btn-primary" data-calendar-nav="next"> >></button>
               </div>
               <div class="btn-group">
@@ -747,16 +753,14 @@
                 </div>
                 <div class="modal-footer">
                   <div class="pull-left">
-                    <button id="editAssignmentButton" class="btn btn-success"
-                    onclick="editAssignment(document.getElementById('event-meta').getAttribute('data-assignment-id'))">
-                    Edit Assignment
-                  </button>
+                    <button id="editAssignmentButton" class="btn btn-success" onclick="editAssignment(document.getElementById('event-meta').getAttribute('data-assignment-id'))">
+                      Edit Assignment
+                    </button>
                   </div>
                   <div class="pull-right">
-                    <button id="deleteAssignmentButton" class="btn btn-danger"
-                    onclick="deleteAssignment(document.getElementById('event-meta').getAttribute('data-assignment-id'))">
-                    Delete Assignment
-                  </button>
+                    <button id="deleteAssignmentButton" class="btn btn-danger" onclick="deleteAssignment(document.getElementById('event-meta').getAttribute('data-assignment-id'))">
+                      Delete Assignment
+                    </button>
                   </div>
                 </div>
               </div>
@@ -764,8 +768,7 @@
           </div>
 
           <script>
-            $(document).on('show.bs.modal','#events-modal', function () {
-            })
+            $(document).on('show.bs.modal', '#events-modal', function () {})
           </script>
         </div>
       </div>
