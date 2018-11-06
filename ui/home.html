@@ -68,11 +68,10 @@
     }
 
     .bs-example {
-      	font-family: sans-serif;
-      	position: relative;
-      	margin: 100px;
-    }
-    
+	font-family: sans-serif;
+	position: relative;
+	margin: 100px;
+}
 .typeahead, .tt-query, .tt-hint {
 	border: 2px solid #CCCCCC;
 	border-radius: 8px;
@@ -158,6 +157,53 @@
         autocomplete(document.getElementById("weekdayPublisherNameInput"), publishers);
       });
 
+  });
+
+   function updateAssignments(assignmentType, congId){
+    if(assignmentType === undefined)
+      assignmentType = "";
+
+    var assignments = new Array();
+    congId = 1;
+
+    var url = "http://localhost:8080/api/" + congId + "/assignments?assignmentType=" + assignmentType; //change congregation id later
+    $.ajax({
+      url: url,
+      type: 'GET',
+      dataType: 'json',
+      async: false
+    }).done(function(data){
+      //update assignments
+      var i;
+      for(i = 0; i < data.length; i++) {
+        var a = data[i];
+
+        //get date
+        var startDate = new Date(a.date);
+        startDate = Date.parse(new Date(startDate.getTime() - startDate.getTimezoneOffset() * -60000));
+
+        //create assignment object and add it to array
+        var eventType = "event-important"
+        if(a.studyPoint === null || a.studyPoint === undefined)
+          eventType = "event-info";
+
+        var assignment = {
+          id: a.id,
+          title: a.assignmentType,
+          url: "www.example.com",
+          class: eventType,
+          start: startDate,
+          end: startDate + 1,
+          description: "Test description",
+          info: a
+        };
+
+        assignments[i] = assignment;
+
+      }
+
+      $('.cal-cell').unbind("dblclick");
+      $("*[data-cal-date]").unbind("click");
     });
 
     function updateAssignments(assignmentType, congId) {
@@ -748,28 +794,20 @@
                   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                   <h3 class="modal-title">Event</h3>
                 </div>
-                <div class="modal-body">
-                  <p>test</p>
+                <div class="modal-body" >
                 </div>
                 <div class="modal-footer">
                   <div class="pull-left">
-                    <button id="editAssignmentButton" class="btn btn-success" onclick="editAssignment(document.getElementById('event-meta').getAttribute('data-assignment-id'))">
-                      Edit Assignment
-                    </button>
+                    <button id="editAssignmentButton" class="btn btn-success" onclick="editAssignment(document.getElementById('event-meta').getAttribute('data-assignment-id'))">Edit Assignment</button>
                   </div>
                   <div class="pull-right">
-                    <button id="deleteAssignmentButton" class="btn btn-danger" onclick="deleteAssignment(document.getElementById('event-meta').getAttribute('data-assignment-id'))">
-                      Delete Assignment
-                    </button>
+                    <button id="deleteAssignmentButton" class="btn btn-danger" onclick="deleteAssignment(document.getElementById('event-meta').getAttribute('data-assignment-id'))">Delete Assignment</button>
+
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
-          <script>
-            $(document).on('show.bs.modal', '#events-modal', function () {})
-          </script>
         </div>
       </div>
     </div>

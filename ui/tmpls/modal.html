@@ -9,12 +9,15 @@
 	<ul>
 		<div id="event-modal-publisher"></div>
 		<div id="event-modal-assistant"></div>
-		<div id="event-modal-sp" data-value="<%=event.info.studyPoint %>"></div>
-		<div id="event-modal-duration" data-value="<%=event.info.duration %>"></div>
-		<div id="event-modal-notes" data-value="<%=event.info.notes %>"></div>
+		<div id="event-modal-sp" class="event-modal-info" data-value="<%=event.info.studyPoint %>"></div>
+		<div id="event-modal-duration" class="event-modal-info" data-value="<%=event.info.duration %>"></div>
+		<div id="event-modal-notes" class="event-modal-info" data-value="<%=event.info.notes %>"></div>
 	</ul>
 
 	<script>
+		$('.event-modal-info').each(function () {
+			$(this).html("");
+		});
 		//retrieve publisher and assistant
 		var url = "http://localhost:8080/api/assignment/" + $('#event-meta').attr('data-assignment-id') + "/publishers";
 		$.ajax({
@@ -28,17 +31,20 @@
 			}
 		})
 
-		if(document.getElementById('event-modal-sp').getAttribute('data-value')){
-			document.getElementById('event-modal-sp').innerHTML = "<li><h4>Study Point: " + document.getElementById('event-modal-sp').getAttribute('data-value')
-				+ "</h4></li>";
-		}
-		if(document.getElementById('event-modal-duration').getAttribute('data-value')){
-			document.getElementById('event-modal-duration').innerHTML = "<li><h4>Duration: " + document.getElementById('event-modal-duration').getAttribute('data-value')
-				+ " minutes </h4></li>";
-		}
-		if(document.getElementById('event-modal-notes').getAttribute('data-value')){
-			document.getElementById('event-modal-notes').innerHTML = "<li><h4>Notes: " + document.getElementById('event-modal-notes').getAttribute('data-value')
-				+ "</h4></li>";
-		}
+		//retrieve other assignment info
+		url = "http://localhost:8080/api/assignment/" + $('#event-meta').attr('data-assignment-id');
+		$.ajax({
+			url: url,
+			type: 'GET',
+			dataType: 'json'
+		}).done(function(data){
+			console.log(data)
+			if(data.studyPoint !== undefined && data.studyPoint !== null)
+				$('#event-modal-sp').html("<li><h4>Study Point: " + data.studyPoint + "<h4></li>");
+			if(data.duration !== undefined && data.duration != null)
+				$('#event-modal-duration').html("<li><h4>Duration: " + data.duration + " minutes<h4></li>");
+			if(data.notes !== undefined && data.notes != null && data.notes.length != 0)
+				$('#event-modal-notes').html("<li><h4>Notes: " + data.notes + "<h4></li>");
+		})
 	</script>
 </div>
