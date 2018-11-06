@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Muli Font from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="./bower_components/bootstrap-calendar/css/calendar.css">
+
+    <title>Scheduler Login</title>
+    <style>
+    body {
+      font-family: 'Muli', sans-serif;
+    }
+
+    button {
+      border-radius: 10px;
+    }
+
+    h4 {
+        text-indent: 50px;
+    }
+
+    input[type=text], input[type=password] {
+        width: 125px;
+        margin: 8px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    #login {
+        background-color: ghostwhite;
+        border-radius: 10px;
+    }
+
+    #loginForm {
+        text-indent: 10px;
+    }
+
+    #headPadding {
+        height: 50px;
+    }
+
+    </style>
+</head>
+
+<body>
+    <div class="col-xs-1"></div>
+    <div class="container-fluid col-xs-11">
+        <div class="container-fluid" id="headPadding"></div>
+        <h1>Welcome</h1>
+        <h4>to the Congregation Scheduler.</h4>
+        <form id="loginForm" method="post" name="loginForm">
+            <div>
+                <input type="text" placeholder=" Username" name="username" id="username" required>
+
+                <input type="password" placeholder=" Password" name="password" id="password" required>
+
+                <input id="remember" type="checkbox" name="remember"> Remember me
+                <button id="login" type="button" class="btn" onclick="validate()">
+                        Login</button>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>
