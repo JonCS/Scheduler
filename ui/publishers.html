@@ -75,7 +75,7 @@
     tr:hover {background-color: #f5f5f5;}
   </style>
   <script>
-  function getPublishers(congId) { //should be named getCongregationPublishers
+    function getPublishers(congId) { //should be named getCongregationPublishers
     congId = 1; // TODO change this later
     var url = "http://localhost:8080/api/congregation/" + congId + "/publishers";
 
@@ -86,6 +86,19 @@
     }).done(function(data) {
       //clear initial entries
       $('#publisherList').empty();
+
+      var tableEntry = `
+        <tr>
+            <th>Name</th>
+              <th>Age</th>
+              <th>Type</th>
+              <th>Recent Assignments</th>
+              <th>Notes</th>
+              <th>Options</th>
+            </tr>
+        `;
+      
+      $('#publisherList').append(tableEntry);
 
       for (i = 0; i < data.length; i++) {
         var name = data[i].firstName.trim() + " " + data[i].lastName.trim();
@@ -186,10 +199,12 @@
       <nav class="col-xs-2">
         <div>
           <!-- Modal Trigger -->
-          <button type="button" class="btn btn-info btn-md" data-toggle="modal" data-target="#addPublisherModal">Add Publisher</button>
+          <button type="button" class="btn btn-info btn-md" data-toggle="modal" data-target="#addPublisherModal">Add
+            Publisher</button>
           <ul class="nav nav-pills nav-stacked" data-spy="affix" data-offset-top="205">
             <h3>Sort by:</h3>
-            <li class="active"><a href="#sortByRecentAssignment" onclick="sortPublishersBy('recent assignments')">Recent Assignments</a></li>
+            <li class="active"><a href="#sortByRecentAssignment" onclick="sortPublishersBy('recent assignments')">Recent
+                Assignments</a></li>
             <li><a href="#sortByFirstName" onclick="sortPublishersBy('first name')">First Name</a></li>
             <li><a href="#sortByLastName" onclick="sortPublishersBy('last name')">Last Name</a></li>
             <li><a href="#sortByAge" onclick="sortPublishersBy('age')">Age</a></li>
@@ -263,24 +278,25 @@
                     </div>
                     <div class="form-group col-xs-12">
                       <label for="notes">Notes:</label>
-                      <textarea class="form-control" style="max-width: 100%; max-height:200px"
-                      rows="3" type="text" id="notesInput"></textarea>
+                      <textarea class="form-control" style="max-width: 100%; max-height:200px" rows="3" type="text" id="notesInput"></textarea>
                     </div>
-                    </form>
+                  </form>
                 </div>
                 <div class="modal-footer">
                   <div id="button-row" class="pull-left">
                     <button id="addPublisherButton" class="btn btn-success" type="submit">add publisher</button>
                     <script type="text/javascript">
-                      $('#addPublisherButton').on('click', function(e) {
+                      $('#addPublisherButton').on('click', function (e) {
                         e.preventDefault();
                         //verify that first and last name aren't empty
                         var publisherId = parseInt($('#addPublisherModal').attr('data-publisher-id'));
-                        if($('#firstNameInput').val() === undefined || $('#firstNameInput').val().trim().length === 0){
+                        if ($('#firstNameInput').val() === undefined || $('#firstNameInput').val().trim().length ===
+                          0) {
                           alert("First name can't be empty");
                           return;
                         }
-                        if($('#lastNameInput').val() === undefined || $('#lastNameInput').val().trim().length === 0){
+                        if ($('#lastNameInput').val() === undefined || $('#lastNameInput').val().trim().length ===
+                          0) {
                           alert("Last name can't be empty");
                           return;
                         }
@@ -290,11 +306,11 @@
                         var url = "http://localhost:8080/api/congregation/" + congId + "/publisher";
 
                         var httpMethod = publisherId > -1 ? 'PUT' : 'POST';
-                        if(publisherId > -1)
+                        if (publisherId > -1)
                           url += "/" + publisherId;
 
                         //create publisher based on input
-                        var pubTypes = $('input:checkbox:checked').map(function() {
+                        var pubTypes = $('input:checkbox:checked').map(function () {
                           return this.value;
                         }).get();
 
@@ -313,7 +329,7 @@
                           dataType: 'json',
                           contentType: "application/json; charset=utf-8",
                           data: JSON.stringify(publisher),
-                        }).always(function(data) {
+                        }).always(function (data) {
                           console.log("Successfully created publisher");
                           getPublishers(1);
                         });
@@ -345,8 +361,6 @@
         </div>
       </div>
       <script type="text/javascript">
-
-
         // Populate table with Publishers
         //TODO replace 1 with congregation Id later on...
         getPublishers(1);
