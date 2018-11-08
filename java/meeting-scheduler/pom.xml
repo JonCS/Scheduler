@@ -47,6 +47,14 @@
     			<version>2.0.1.RELEASE</version>
 		</dependency>
 		
+		<!-- JWT Dependencies -->
+		
+		<dependency>
+  			<groupId>io.jsonwebtoken</groupId>
+  			<artifactId>jjwt</artifactId>
+  			<version>0.9.0</version>
+		</dependency>
+		
 		<!-- JAXB dependencies -->
 
 		<dependency>

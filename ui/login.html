@@ -61,15 +61,43 @@
         <h4>to the Congregation Scheduler.</h4>
         <form id="loginForm" method="post" name="loginForm">
             <div>
-                <input type="text" placeholder=" Username" name="username" id="username" required>
+                <input id="usernameInput" type="text" placeholder=" Username" name="username" id="username" required>
 
-                <input type="password" placeholder=" Password" name="password" id="password" required>
+                <input id="passwordInput" type="password" placeholder=" Password" name="password" id="password" required>
 
                 <input id="remember" type="checkbox" name="remember"> Remember me
-                <button id="login" type="button" class="btn" onclick="validate()">
+                <button id="login" type="submit" class="btn">
                         Login</button>
             </div>
         </form>
+
+        <script>
+            $('#loginForm').submit(function(e) {
+                e.preventDefault(); //prevent page refresh
+                var url = "http://localhost:8080/login";
+                var loginRequest = {
+                    username: $('#usernameInput').val(),
+                    password: $('#passwordInput').val()
+                }
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    dataType: 'json',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(loginRequest)
+                }).always(function (response){
+                    if(response.status == 200){
+                        sessionStorage.setItem("jwt", response.responseText);
+                        window.location.href = "/ui/home.html"
+                    }
+                    else{
+                        alert("Username or password is incorrect.")
+                    }
+                        
+                });
+            })
+        </script>
     </div>
 </body>
 
