@@ -42,6 +42,10 @@ public class Publisher {
 	@NotNull
 	private String lastName;
 	
+	@Column(name = "email")
+	@NotNull
+	private String email;
+	
 	@Column(name = "notes")
 	private String notes;
 	
@@ -133,6 +137,14 @@ public class Publisher {
 
 	public void setPublisherTypes(Collection<PublisherType> publisherTypes) {
 		this.publisherTypes = publisherTypes;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 	
 }
