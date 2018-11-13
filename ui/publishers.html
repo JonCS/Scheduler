@@ -146,11 +146,11 @@
         var tableEntry = `
         <tr>
           <td>` + name + `</td>
+          <td>` + email + `</td>
           <td>` + age + `</td>
           <td>` + email + `</td>
           <td>` + types + `</td>
-          <td>` + 'NEED RECENT ASSIGNMENTS HERE' +
-          `</td>
+          <td>` + '' + `</td>
           <td>` + notes + `</td>
           <td>
           <button id="editPublisherButton` + i + `" class="btn btn-warning" data-publisher-id=` + data[i].id + `>edit</button>
@@ -393,6 +393,7 @@
           <table class='table table-hover' id='publisherList' style="width:100%">
             <tr>
               <th>Name</th>
+              <th>Email</th>
               <th>Age</th>
               <th>Type</th>
               <th>Recent Assignments</th>
@@ -457,8 +458,8 @@
                   case 'age':
                     /* Get the two elements you want to compare,
                     one from current row and one from the next: */
-                    x = rows[i].getElementsByTagName("TD")[1];
-                    y = rows[i + 1].getElementsByTagName("TD")[1];
+                    x = rows[i].getElementsByTagName("TD")[2];
+                    y = rows[i + 1].getElementsByTagName("TD")[2];
                     if (Number(x.innerHTML) > Number(y.innerHTML)) {
                       // If so, mark as a switch and break the loop:
                       shouldSwitch = true;
