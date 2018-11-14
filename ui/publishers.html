@@ -111,12 +111,12 @@
       var tableEntry = `
         <tr>
             <th>Name</th>
-            <th>Email</th>
-            <th>Age</th>
-            <th>Type</th>
-            <th>Recent Assignments</th>
-            <th>Notes</th>
-            <th>Options</th>
+              <th>Age</th>
+              <th>Email</th>
+              <th>Type</th>
+              <th>Recent Assignments</th>
+              <th>Notes</th>
+              <th>Options</th>
             </tr>
         `;
       
@@ -125,11 +125,6 @@
       for (i = 0; i < data.length; i++) {
         var name = data[i].firstName.trim() + " " + data[i].lastName.trim();
         var email = data[i].email;
-
-         if (email == null) {
-           email = data[i].firstName.trim() + '@gmail.com'
-         } 
-
         var age = data[i].age;
         //var baptismDate = data[i].baptismDate;
         var type = data[i].publisherTypes;
@@ -151,6 +146,7 @@
           <td>` + name + `</td>
           <td>` + email + `</td>
           <td>` + age + `</td>
+          <td>` + email + `</td>
           <td>` + types + `</td>
           <td>` + '' + `</td>
           <td>` + notes + `</td>
@@ -176,6 +172,7 @@
           }).done(function(data){
             $('#firstNameInput').val(data.firstName);
             $('#lastNameInput').val(data.lastName);
+            $('#emailInput').val(data.email);
             $('#ageInput').val(data.age);
             $('#notesInput').val(data.notes);
             $('#addPublisherButton').html('save');
@@ -220,16 +217,23 @@
         <li><a href="/ui/about.html">About</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
+<<<<<<< HEAD
 <<<<<<< Updated upstream
         <li><a href="/ui/login.html"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
 =======
         <li><a id="logoutLink" href="/ui/login.html"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+=======
+        <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+>>>>>>> 0737cf29573afe7af91a13be17d4abf0d6b39bd1
         <script>
             $("#logoutLink").click(function() {
               sessionStorage.removeItem("jwt");
             });
           </script>
+<<<<<<< HEAD
 >>>>>>> Stashed changes
+=======
+>>>>>>> 0737cf29573afe7af91a13be17d4abf0d6b39bd1
       </ul>
     </div>
   </nav>
@@ -273,12 +277,21 @@
                         <input id="firstNameInput" class="form-control" type="text" placeholder="本名" required>
                       </div>
                     </div>
+
                     <div class="form-group">
                       <label class="col-xs-3 control-label">Last Name:</label>
                       <div class="col-xs-9" style="padding-right: 50px">
                         <input id="lastNameInput" class="form-control" type="text" placeholder="姓" required>
                       </div>
                     </div>
+
+                    <div class="form-group">
+                        <label class="col-xs-3 control-label">Email:</label>
+                        <div class="col-xs-9" style="padding-right: 50px">
+                            <input id="emailInput" class="form-control" type="text" placeholder="电子邮件" required>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                       <label class="col-xs-3 control-label">Age:</label>
                       <div class="col-xs-9" style="padding-right: 50px">
@@ -358,6 +371,7 @@
                         var publisher = {
                           firstName: $("#firstNameInput").val(),
                           lastName: $("#lastNameInput").val(),
+                          email: $('#emailInput').val(),
                           age: $("#ageInput").val(),
                           publisherTypes: pubTypes,
                           notes: $("#notesInput").val()

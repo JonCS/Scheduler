@@ -281,6 +281,55 @@
     });
     $('#events-modal').modal('toggle'); //close window
   }
+
+  function sendEmail(publisherId, assistantName, assignment, assignmentType, publisherName){
+    //get email address of publisher
+    $.ajax({
+      url: "http://localhost:8080/api/publisher/" + publisherId,
+      type: 'GET',
+      dataType: 'json'
+    }).done(function(data) {
+      var emailSubject = "Reminder - " + assignment.assignmentType + " on " + assignment.date; 
+      var emailBody = "Hi " + data.firstName + " " + data.lastName + ",\n\n" +
+      "This is a friendly reminder that you have an assignment on " + assignment.date + ". Please note the assignment details:\n" +
+      "\t-Assignment type: " + assignment.assignmentType + "\n" +
+      "\t-Date: " + assignment.date + "\n";
+      
+      if(assignmentType === "WeekdayAssignment"){
+        emailBody += "\t-Duration: " + assignment.duration + " minutes\n";
+        if(assignment.notes !== undefined && assignment.notes.trim().length > 0)
+          emailBody += "\t-Notes: " + assignment.notes + "\n";
+      }
+      else if(assignmentType === "MinistrySchoolAssignment"){
+        if(assistantName != null){
+          if(publisherName != null)
+            emailBody += "\t-Publisher: " + publisherName + "\n" + 
+              "\t-Assistant: " + assistantName + "\n";
+          else
+            emailBody += "\t-Publisher: " + data.firstName + " " + data.lastName + "\n" + 
+              "\t-Assistant: " + assistantName + "\n";
+        }
+        emailBody += "\t-Study Point: " + assignment.studyPoint + "\n";
+      }
+      
+      emailBody += "\nSincerely,\nAssignment Scheduler";
+
+      var emailRequest = {
+        body: emailBody,
+        recipient: data.email,
+        subject: emailSubject
+      };
+
+      //send email
+      $.ajax({
+        url: "http://localhost:8080/api/sendemail",
+        type: 'POST',
+        dataType: 'json',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(emailRequest)
+      });
+    });
+  }
   </script>
 </head>
 
@@ -301,7 +350,12 @@
         <li><a href="/ui/about.html">About</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-         <li><a href="/ui/login.html"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+         <li><a id="logoutLink" href="/ui/login.html"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+        <script>
+          $("#logoutLink").click(function() {
+            sessionStorage.removeItem("jwt");
+          });
+        </script>
       </ul>
     </div>
   </nav>
@@ -506,6 +560,13 @@
                               data: JSON.stringify(minSchoolAssignment)
                             }).done(function(data){
                               refreshCalendar(data.date);
+                              if(assistantId > -1){
+                                //send email to publisher and assistant
+                                sendEmail(publisherId, $("#minSchoolAssistantNameInput").val(), data, "MinistrySchoolAssignment", null);
+                                sendEmail(assistantId, $("#minSchoolAssistantNameInput").val(), data, "MinistrySchoolAssignment", $("#minSchoolPubNameInput").val());
+                              }
+                              else
+                                sendEmail(publisherId, null, data, "MinistrySchoolAssignment", null);
                             });
                             $('#minSchoolAssignmentSlipModal').modal('toggle');
                           }
@@ -657,6 +718,7 @@
                                   contentType: "application/json; charset=utf-8",
                                   data: JSON.stringify(meetingAssignment)
                                 }).done(function(data){
+                                  sendEmail(publisherId, null, data, "WeekdayAssignment", null);
                                   refreshCalendar(data.date);
                                 });
                                 //close modal and refresh assignments
