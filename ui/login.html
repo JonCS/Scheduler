@@ -50,7 +50,17 @@
         height: 50px;
     }
 
+    #signin {
+        text-indent: 30px;
+        
+    }      
+
     </style>
+    <script>
+         //redirect to home page if user still signed in
+         if(sessionStorage.getItem("jwt") !== null)
+                window.location.href = "/ui/home.html";
+    </script>
 </head>
 
 <body>
@@ -64,12 +74,13 @@
                 <input id="usernameInput" type="text" placeholder=" Username" name="username" id="username" required>
 
                 <input id="passwordInput" type="password" placeholder=" Password" name="password" id="password" required>
-
-                <input id="remember" type="checkbox" name="remember"> Remember me
                 <button id="login" type="submit" class="btn">
                         Login</button>
             </div>
         </form>
+        <div id="signin">
+            Don't have an account? <a style="text-decoration: underline" href="/ui/registration.html">Register here!</a>
+        </div>
 
         <script>
             $('#loginForm').submit(function(e) {

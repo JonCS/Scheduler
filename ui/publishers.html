@@ -92,14 +92,12 @@
       }
     }
 
-    
-    
     //continuously check that jwt is set and is not expired
     checkCredentials();
     setInterval(checkCredentials, 10000);
 
     function getPublishers(congId) { //should be named getCongregationPublishers
-    congId = 1; // TODO change this later
+    congId = sessionStorage.getItem("congId");
     var url = "http://localhost:8080/api/congregation/" + congId + "/publishers";
 
     $.ajax({
@@ -194,12 +192,16 @@
       }
     })
   };
+
+  $( document ).ready(function() {
+      $("#title").text(sessionStorage.getItem("congName"));
+    }); 
   </script>
 </head>
 
 <body>
   <div>
-    <h1 id="title">Cupertino Congregation</h1>
+    <h1 id="title"></h1>
   </div>
 
 
@@ -215,12 +217,23 @@
         <li><a href="/ui/about.html">About</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
+<<<<<<< HEAD
+<<<<<<< Updated upstream
+        <li><a href="/ui/login.html"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+=======
+        <li><a id="logoutLink" href="/ui/login.html"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+=======
         <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+>>>>>>> 0737cf29573afe7af91a13be17d4abf0d6b39bd1
         <script>
             $("#logoutLink").click(function() {
               sessionStorage.removeItem("jwt");
             });
           </script>
+<<<<<<< HEAD
+>>>>>>> Stashed changes
+=======
+>>>>>>> 0737cf29573afe7af91a13be17d4abf0d6b39bd1
       </ul>
     </div>
   </nav>
@@ -343,7 +356,7 @@
                         }
 
                         //construct URL
-                        var congId = 1; //change this later
+                        var congId = sessionStorage.getItem("congId");
                         var url = "http://localhost:8080/api/congregation/" + congId + "/publisher";
 
                         var httpMethod = publisherId > -1 ? 'PUT' : 'POST';

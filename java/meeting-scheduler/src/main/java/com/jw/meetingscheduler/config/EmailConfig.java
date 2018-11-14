@@ -17,7 +17,7 @@ public class EmailConfig {
 	    mailSender.setPort(587);
 	     
 	    mailSender.setUsername("assignment.scheduler.no.reply@gmail.com");
-	    mailSender.setPassword("reminders1");
+	    mailSender.setPassword("oqcsrogfnrcwqbvg");
 	     
 	    Properties props = mailSender.getJavaMailProperties();
 	    props.put("mail.transport.protocol", "smtp");

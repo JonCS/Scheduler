@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -20,6 +22,9 @@ public class User {
 	private Long id;
 	
 	@Column
+    private String name;
+
+	@Column
 	@NotNull
     private String username;
 
@@ -30,7 +35,27 @@ public class User {
     @NotNull
     private String email;
     
-    public Long getId() {
+    @ManyToOne
+	@JoinColumn(name="congregation_id")
+	private Congregation congregation;
+    
+    public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+    
+    public Congregation getCongregation() {
+		return congregation;
+	}
+
+	public void setCongregation(Congregation congregation) {
+		this.congregation = congregation;
+	}
+
+	public Long getId() {
 		return id;
 	}
 
