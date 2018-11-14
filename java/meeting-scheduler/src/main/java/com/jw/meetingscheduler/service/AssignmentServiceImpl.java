@@ -2,18 +2,16 @@ package com.jw.meetingscheduler.service;
 
 import java.sql.Date;
 import java.time.LocalDate;
-import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jw.meetingscheduler.dto.AssignmentPublishersDto;
 import com.jw.meetingscheduler.exception.AssignmentDoesNotExistException;
 import com.jw.meetingscheduler.model.Assignment;
-import com.jw.meetingscheduler.model.Congregation;
 import com.jw.meetingscheduler.model.MeetingAssignment;
 import com.jw.meetingscheduler.model.MinistrySchoolAssignment;
 import com.jw.meetingscheduler.model.Publisher;
@@ -28,13 +26,21 @@ public class AssignmentServiceImpl implements AssignmentService {
 	
 	@Autowired
 	private PublisherService publisherService;
-	
-	@Autowired
-	private CongregationService congregationService;
 
 	@Override
-	public Set<Assignment> getPublisherAssignments(Long publisherId) {
-		return publisherService.getPublisherById(publisherId).getAssignments();
+	public Set<Assignment> getPublisherAssignments(Long publisherId, Integer dateRange) {
+		if(dateRange == null)
+			return publisherService.getPublisherById(publisherId).getAssignments();
+			
+		
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.DAY_OF_MONTH, -dateRange);
+		java.sql.Date beginDate = CustomUtils.convertFromJAVADateToSQLDate(calendar.getTime());
+		
+		calendar.add(Calendar.DAY_OF_MONTH, dateRange * 2);
+		java.sql.Date endDate = CustomUtils.convertFromJAVADateToSQLDate(calendar.getTime());
+		
+		return new HashSet<Assignment>(assignmentRepository.getByPublisher_IdAndBetweenDates(publisherId, beginDate, endDate));
 	}
 	
 	@Override
@@ -90,7 +96,7 @@ public class AssignmentServiceImpl implements AssignmentService {
 	}
 
 	@Override
-	public void editMeetingAssignment(Long publisherId, Long assignmentId, MeetingAssignment meetingAssignment) {
+	public MeetingAssignment editMeetingAssignment(Long publisherId, Long assignmentId, MeetingAssignment meetingAssignment) {
 		if(assignmentRepository.existsById(assignmentId)) { 
 			MeetingAssignment existing = (MeetingAssignment) assignmentRepository.findById(assignmentId).get();
 			
@@ -100,14 +106,14 @@ public class AssignmentServiceImpl implements AssignmentService {
 			CustomUtils.copyProperties(meetingAssignment, existing);
 			existing.setPublisher(publisherService.getPublisherById(publisherId));
 			
-			assignmentRepository.saveAndFlush(existing);
+			return assignmentRepository.saveAndFlush(existing);
 		}
 		else 
-			createMeetingAssignment(publisherId, meetingAssignment); //save assignment if not present
+			return createMeetingAssignment(publisherId, meetingAssignment); //save assignment if not present
 	}
 
 	@Override
-	public void editMinistrySchoolAssignment(Long publisherId, Long assistantId, Long assignmentId,
+	public MinistrySchoolAssignment editMinistrySchoolAssignment(Long publisherId, Long assistantId, Long assignmentId,
 			MinistrySchoolAssignment minSchoolAssignment) {
 		if(assignmentRepository.existsById(assignmentId)) { 
 			MinistrySchoolAssignment existing = (MinistrySchoolAssignment) assignmentRepository.findById(assignmentId).get();
@@ -123,10 +129,10 @@ public class AssignmentServiceImpl implements AssignmentService {
 				existing.setAssistant(assistant);
 			}
 			
-			assignmentRepository.saveAndFlush(existing);
+			return assignmentRepository.saveAndFlush(existing);
 		}
 		else 
-			createMinistrySchoolAssignment(publisherId, assistantId, minSchoolAssignment); //save assignment if not present
+			return createMinistrySchoolAssignment(publisherId, assistantId, minSchoolAssignment); //save assignment if not present
 	}
 	
 	@Override

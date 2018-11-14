@@ -10,7 +10,7 @@ import com.jw.meetingscheduler.model.MinistrySchoolAssignment;
 
 public interface AssignmentService {
 	
-	public Set<Assignment> getPublisherAssignments(Long publisherId);
+	public Set<Assignment> getPublisherAssignments(Long publisherId, Integer dateRange);
 	
 	public List<Assignment> getCongregationAssignments(Long congregationId, String assignmentType);
 	
@@ -24,9 +24,9 @@ public interface AssignmentService {
 
 	public MinistrySchoolAssignment createMinistrySchoolAssignment(Long publisherId, Long assistantId, MinistrySchoolAssignment minSchoolAssignment);
 	
-	public void editMeetingAssignment(Long publisherId, Long assignmentId, MeetingAssignment meetingAssignment);
+	public MeetingAssignment editMeetingAssignment(Long publisherId, Long assignmentId, MeetingAssignment meetingAssignment);
 	
-	public void editMinistrySchoolAssignment(Long publisherId, Long assistantId, Long assignmentId, MinistrySchoolAssignment minSchoolAssignment);
+	public MinistrySchoolAssignment editMinistrySchoolAssignment(Long publisherId, Long assistantId, Long assignmentId, MinistrySchoolAssignment minSchoolAssignment);
 	
 	public void reassignMeetingAssignment(Long newPublisherId, Long assignmentId);
 	

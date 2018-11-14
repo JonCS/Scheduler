@@ -1,5 +1,6 @@
 package com.jw.meetingscheduler.utils;
 
+import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,4 +28,13 @@ public class CustomUtils {
 	public static void copyProperties(Object src, Object target) {
 	    BeanUtils.copyProperties(src, target, getNullPropertyNames(src));
 	}
+	
+	public static java.sql.Date convertFromJAVADateToSQLDate(
+            java.util.Date javaDate) {
+        java.sql.Date sqlDate = null;
+        if (javaDate != null) {
+            sqlDate = new Date(javaDate.getTime());
+        }
+        return sqlDate;
+    }
 }
