@@ -1,5 +1,6 @@
 package com.jw.meetingscheduler.repository;
 
+import java.sql.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -29,4 +30,7 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long>{
 	
 	@Query("select a from Assignment a where a.assignmentType =?1 and year(a.date) = ?2 and month(a.date) = ?3 and day(a.date) = ?4")
 	public List<Assignment> getByAssignment_TypeAndYearAndMonthAndDay(String assignmentType, int year, int month, int day);
+	
+	@Query("select a from Assignment a where a.publisher.id =?1 and a.date between ?2 and ?3")
+	public List<Assignment> getByPublisher_IdAndBetweenDates(Long publisherId, Date beginDate, Date endDate);
 }

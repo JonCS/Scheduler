@@ -27,8 +27,9 @@ public class AssignmentController {
 	//GET APIs
 	
 	@RequestMapping(value = "/api/publisher/{publisherId}/assignments", method = RequestMethod.GET)
-	public Set<Assignment> getPublisherAssignments(@PathVariable("publisherId") Long publisherId){
-		return assignmentService.getPublisherAssignments(publisherId);
+	public Set<Assignment> getPublisherAssignments(@PathVariable("publisherId") Long publisherId,
+			@RequestParam("dateRange") Optional<Integer> dateRange){
+		return assignmentService.getPublisherAssignments(publisherId, dateRange.orElse(null));
 	}
 	
 	@RequestMapping(value = "/api/assignment/{assignmentId}", method = RequestMethod.GET)
@@ -80,18 +81,18 @@ public class AssignmentController {
 	//PUT APIs
 	
 	@RequestMapping(value = "/api/publisher/{publisherId}/MeetingAssignment/{assignmentId}", method = RequestMethod.PUT)
-	public void editMeetingAssignment(@RequestBody MeetingAssignment meetingAssignment, 
+	public MeetingAssignment editMeetingAssignment(@RequestBody MeetingAssignment meetingAssignment, 
 			@PathVariable("publisherId") Long publisherId, 
 			@PathVariable("assignmentId") Long assignmentId) {
-		assignmentService.editMeetingAssignment(publisherId, assignmentId, meetingAssignment);
+		return assignmentService.editMeetingAssignment(publisherId, assignmentId, meetingAssignment);
 	}
 	
 	@RequestMapping(value = "/api/publisher/{publisherId}/MinistrySchoolAssignment/{assignmentId}", method = RequestMethod.PUT)
-	public void editMinistrySchoolAssignment(@RequestBody MinistrySchoolAssignment minSchoolAssignment, 
+	public MinistrySchoolAssignment editMinistrySchoolAssignment(@RequestBody MinistrySchoolAssignment minSchoolAssignment, 
 			@PathVariable("publisherId") Long publisherId, 
 			@PathVariable("assignmentId") Long assignmentId,
 			@RequestParam("assistantId") Optional<Long> assistantId) {
-		assignmentService.editMinistrySchoolAssignment(publisherId, assistantId.orElse(null), assignmentId, minSchoolAssignment);
+		return assignmentService.editMinistrySchoolAssignment(publisherId, assistantId.orElse(null), assignmentId, minSchoolAssignment);
 	}
 	
 	@RequestMapping(value = "/api/MeetingAssignment/{assignmentId}/publisher/{newPublisherId}", method = RequestMethod.PUT)

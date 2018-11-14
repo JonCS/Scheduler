@@ -111,10 +111,11 @@
       var tableEntry = `
         <tr>
             <th>Name</th>
-              <th>Age</th>
               <th>Email</th>
+              <th>Age</th>
               <th>Type</th>
-              <th>Recent Assignments</th>
+              <th>Past Assignments</th>
+              <th>Upcoming Assignments</th>
               <th>Notes</th>
               <th>Options</th>
             </tr>
@@ -146,9 +147,9 @@
           <td>` + name + `</td>
           <td>` + email + `</td>
           <td>` + age + `</td>
-          <td>` + email + `</td>
           <td>` + types + `</td>
-          <td>` + '' + `</td>
+          <td id="tdPastAssignments` + data[i].id + `" data-date="date">` + '' + `</td>
+          <td id="tdUpcomingAssignments` + data[i].id + `" date-date="date">` + '' + `</td>
           <td>` + notes + `</td>
           <td>
           <button id="editPublisherButton` + i + `" class="btn btn-warning" data-publisher-id=` + data[i].id + `>edit</button>
@@ -157,6 +158,56 @@
         `;
 
         $('#publisherList').append(tableEntry);
+
+        //retrieve past and future assignments
+        $.ajax({
+          url: "http://localhost:8080/api/publisher/" + data[i].id + "/assignments?dateRange=14",
+          type: 'GET',
+          dataType: 'json',
+          async: false
+        }).done(function(assignments){
+          var j;
+          var pastAssignments = "";
+          var futureAssignments = "";
+
+          var mostRecentDate = null;
+          var closestUpcomingDate = null;
+
+          var currentDate = new Date();
+          for(j = 0; j < assignments.length; j++){
+            if(new Date(assignments[j]["date"]) <= currentDate){
+              pastAssignments += "<b>" + new Date(assignments[j]["date"]).toLocaleDateString("en-US") + "</b><ul>" +
+                "<li>" + assignments[j]["assignmentType"] + "</li></ul><br>";
+
+                if(mostRecentDate == null || new Date(assignments[j]["date"]) > mostRecentDate)
+                  mostRecentDate = new Date(assignments[j]["date"]);
+            }
+            else{
+              futureAssignments += "<b>" + new Date(assignments[j]["date"]).toLocaleDateString("en-US") + "</b><ul>" +
+                "<li>" + assignments[j]["assignmentType"] + "</li></ul><br>";
+
+              if(closestUpcomingDate == null || new Date(assignments[j]["date"]) < closestUpcomingDate)
+                  closestUpcomingDate = new Date(assignments[j]["date"]);
+            }
+          }
+
+          if(futureAssignments.length == 0)
+            futureAssignments = "None";
+          if(pastAssignments.length == 0)
+            pastAssignments = "None";
+
+          if(mostRecentDate == null)
+            mostRecentDate = new Date(-100);
+          if(closestUpcomingDate == null)
+            closestUpcomingDate = new Date(100);
+
+          $("#tdPastAssignments" + data[i].id).append(pastAssignments);
+          $("#tdPastAssignments" + data[i].id).attr("data-date", mostRecentDate);
+
+          $("#tdUpcomingAssignments" + data[i].id).append(futureAssignments);
+          $("#tdUpcomingAssignments" + data[i].id).attr("data-date", closestUpcomingDate);
+          
+        });
 
         //add edit button functionality
         $('#editPublisherButton' + i).click(function(){
@@ -237,7 +288,9 @@
             Publisher</button>
           <ul class="nav nav-pills nav-stacked" data-spy="affix" data-offset-top="205">
             <h3>Sort by:</h3>
-            <li class="active"><a href="#sortByRecentAssignment" onclick="sortPublishersBy('recent assignments')">Recent
+            <li><a href="#sortByRecentAssignment" onclick="sortPublishersBy('recent assignments')">Past
+                Assignments</a></li>
+            <li><a href="#sortByUpcomingAssignment" onclick="sortPublishersBy('upcoming assignments')">Upcoming
                 Assignments</a></li>
             <li><a href="#sortByFirstName" onclick="sortPublishersBy('first name')">First Name</a></li>
             <li><a href="#sortByLastName" onclick="sortPublishersBy('last name')">Last Name</a></li>
@@ -398,7 +451,7 @@
               <th>Email</th>
               <th>Age</th>
               <th>Type</th>
-              <th>Recent Assignments</th>
+              <th>Past Assignments</th>
               <th>Notes</th>
               <th>Options</th>
             </tr>
@@ -408,7 +461,7 @@
       <script type="text/javascript">
         // Populate table with Publishers
         //TODO replace 1 with congregation Id later on...
-        getPublishers(1);
+        getPublishers(sessionStorage.getItem("congId"));
 
         function sortPublishersBy(type) { //from w3school
           var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
@@ -431,7 +484,19 @@
               if (dir == "asc") {
                 switch (type) {
                   case 'recent assignments':
-                    console.log("not implemented yet");
+                    x = rows[i].getElementsByTagName("TD")[4].getAttribute("data-date");
+                    y = rows[i + 1].getElementsByTagName("TD")[4].getAttribute("data-date");
+                    if(x > y){
+                      shouldSwitch = true;
+                    }
+                    console.log(x)
+                    break;
+                  case 'upcoming assignments':
+                    x = rows[i].getElementsByTagName("TD")[5].getAttribute("data-date");
+                    y = rows[i + 1].getElementsByTagName("TD")[5].getAttribute("data-date");
+                    if(x > y){
+                      shouldSwitch = true;
+                    }
                     break;
                   case 'first name':
                     /* Get the two elements you want to compare,
@@ -473,7 +538,18 @@
               } else if (dir == "desc") {
                 switch (type) {
                   case 'recent assignments':
-                    console.log("not implemented yet");
+                    x = rows[i].getElementsByTagName("TD")[4].getAttribute("data-date");
+                    y = rows[i + 1].getElementsByTagName("TD")[4].getAttribute("data-date");
+                    if(x < y){
+                      shouldSwitch = true;
+                    }
+                    break;
+                  case 'upcoming assignments':
+                    x = rows[i].getElementsByTagName("TD")[5].getAttribute("data-date");
+                    y = rows[i + 1].getElementsByTagName("TD")[5].getAttribute("data-date");
+                    if(x < y){
+                      shouldSwitch = true;
+                    }
                     break;
                   case 'first name':
                     /* Get the two elements you want to compare,
@@ -502,8 +578,8 @@
                   case 'age':
                     /* Get the two elements you want to compare,
                     one from current row and one from the next: */
-                    x = rows[i].getElementsByTagName("TD")[1];
-                    y = rows[i + 1].getElementsByTagName("TD")[1];
+                    x = rows[i].getElementsByTagName("TD")[2];
+                    y = rows[i + 1].getElementsByTagName("TD")[2];
                     if (Number(x.innerHTML) < Number(y.innerHTML)) {
                       // If so, mark as a switch and break the loop:
                       shouldSwitch = true;
