@@ -11,6 +11,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "congregations")
 public class Congregation {
@@ -25,6 +27,18 @@ public class Congregation {
 	
 	@OneToMany(mappedBy = "congregation")
 	private List<Publisher> publishers;
+	
+	@OneToMany(mappedBy = "congregation")
+	@JsonIgnore
+	private List<User> users;
+
+	public List<User> getUsers() {
+		return users;
+	}
+
+	public void setUsers(List<User> users) {
+		this.users = users;
+	}
 
 	public Long getId() {
 		return id;

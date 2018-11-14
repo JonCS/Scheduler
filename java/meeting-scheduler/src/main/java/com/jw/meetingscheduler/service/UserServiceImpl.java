@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.jw.meetingscheduler.exception.UserAlreadyExistsException;
 import com.jw.meetingscheduler.exception.UserDoesNotExistException;
+import com.jw.meetingscheduler.model.Congregation;
 import com.jw.meetingscheduler.model.User;
 import com.jw.meetingscheduler.repository.UserRepository;
 import com.jw.meetingscheduler.utils.CustomUtils;
@@ -17,6 +18,9 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private CongregationService congregationService;
 	
 	@Autowired
 	private BCryptPasswordEncoder bcryptEncoder;
@@ -30,11 +34,14 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public User createUser(User user) {
+	public User createUser(User user, Long congregationId) {
 		if(!userRepository.getByEmail(user.getEmail()).isEmpty() || !userRepository.getByUsername(user.getUsername()).isEmpty())
 			throw new UserAlreadyExistsException("User already exists");
 			
 		user.setPassword(bcryptEncoder.encode(user.getPassword()));
+		Congregation cong = congregationService.getCongregation(congregationId);
+		user.setCongregation(cong);
+		
 		return userRepository.saveAndFlush(user);
 	}
 
@@ -50,7 +57,8 @@ public class UserServiceImpl implements UserService{
 			userRepository.saveAndFlush(existing);
 		}	
 		else
-			createUser(user);
+			//createUser(user);
+			throw new UserDoesNotExistException("User does not exist");
 	}
 
 	@Override

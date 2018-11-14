@@ -109,9 +109,38 @@
 }
   </style>
   <script type="text/javascript">
-  var calendar;
+    var calendar;
+
+    function checkCredentials() {
+      var jwt = sessionStorage.getItem("jwt");
+      if(jwt == null)
+       window.location.href = "/ui/login.html"
+      else{
+        //check if jwt is expired
+        var payload = JSON.parse(atob(jwt.split('.')[1]));
+        var exp = new Date(payload.exp * 1000);
+        var current = new Date();
+
+        if(current > exp){//jwt is expired
+          sessionStorage.removeItem("jwt");
+          window.location.href = "/ui/login.html";
+          return;
+        }
+
+        //set congregation name and id
+        sessionStorage.setItem("congId", payload.congId);
+        sessionStorage.setItem("congName", payload.congName);
+      }
+    }
+    
+    //continuously check that jwt is set and is not expired
+    checkCredentials();
+    setInterval(checkCredentials, 10000);
+
  //set up calendar after document is ready
   $( document ).ready(function() {
+    $("#pageTitle").text(sessionStorage.getItem("congName"));
+
       //set up calendar
       calendar = $("#calendar").calendar({
         tmpl_path: "./tmpls/",
@@ -126,7 +155,7 @@
       $('.cal-cell').unbind("dblclick");
       $("*[data-cal-date]").unbind("click");
       //set up autocomplete
-      var congId = 1; //change this later
+      var congId = sessionStorage.getItem("congId");
       var url = "http://localhost:8080/api/congregation/" + congId + "/publishers";
       $.ajax({
         url: url,
@@ -148,7 +177,7 @@
     if(assignmentType === undefined)
       assignmentType = "";
     var assignments = new Array();
-    congId = 1;
+    congId = sessionStorage.getItem("congId");
     var url = "http://localhost:8080/api/" + congId + "/assignments?assignmentType=" + assignmentType; //change congregation id later
     $.ajax({
       url: url,
@@ -257,7 +286,7 @@
 
 <body>
   <div>
-    <h1 id="title">Cupertino Congregation</h1>
+    <h1 id="pageTitle"></h1>
   </div>
 
   <!-- Navigation Bar -->
@@ -290,11 +319,11 @@
             });
           </script>
 
-          <li><a id="weekday_anchor" href="#section2">SBCC – Weekday</a></li>
+          <li><a id="weekday_anchor" href="#section2">CLM</a></li>
           <script>
             $('#weekday_anchor').on('click', function (e) {
               $('#createAssignmentButton').attr('data-target','#weekdayAssignmentSlipModal');
-              $('#createAssignmentButton').html(' Create SBCC Assignment ');
+              $('#createAssignmentButton').html(' Create CLM Assignment ');
             });
           </script>
 
@@ -425,7 +454,7 @@
                       $('#minSchoolAssignmentForm').submit(function(e) {
                         e.preventDefault(); //prevent page refresh
                         //get list of publishers for congregation
-                        var congId = 1; // TODO change this later
+                        var congId = sessionStorage.getItem("congId");
                         var url = "http://localhost:8080/api/congregation/" + congId + "/publishers";
                         $.ajax({
                           url: url,
@@ -586,7 +615,7 @@
                           $('#createWeekdayAssignmentForm').submit(function(e) {
                             e.preventDefault(); //prevent page refresh
                             //get list of publishers for congregation
-                            var congId = 1; //change this later
+                            var congId = sessionStorage.getItem("congId");
                             var url = "http://localhost:8080/api/congregation/" + congId + "/publishers";
                             $.ajax({
                               url: url,

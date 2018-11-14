@@ -11,7 +11,8 @@
 		events_source: function(){
 			var assignments = new Array();
 
-	    var url = "http://localhost:8080/scheduler-service/api/1/assignments?assignmentType="; //change congregation id later
+		var congId = sessionStorage.getItem("congId");
+	    var url = "http://localhost:8080/scheduler-service/api/" + congId + "/assignments?assignmentType="; //change congregation id later
 	    $.ajax({
 	      url: url,
 	      type: 'GET',

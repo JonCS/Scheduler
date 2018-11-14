@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Muli Font from Google Fonts -->
+        <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet">
+
+        <!-- JQuery-->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+        <!-- Bootstrap CSS -->
+        <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script> 
+        <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+        
+        <link rel="stylesheet" type="text/css" href="/ui/registration/css/registration.css">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
+
+        <title>Scheduler Registration</title>
+
+        <script>
+            //redirect to home page if user still signed in
+            if(sessionStorage.getItem("jwt") !== null)
+                window.location.href = "/ui/home.html";
+        </script>
+
+    </head>
+    <body>
+        <div>
+            <article class="card-body mx-auto" style="max-width: 400px;">
+                <h3 class="card-title mt-3 text-center">Create Account</h3>
+                <br>
+
+                <!-- Registration Form -->
+                <form id="registrationForm">
+                    <div class="form-group input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"> <i class="fa fa-user"></i> </span>
+                        </div>
+                        <input id="usernameInput" class="form-control" placeholder="Username" type="text" required>
+                    </div>
+                    <div class="form-group input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
+                        </div>
+                        <input id="emailInput" class="form-control" placeholder="Email address" type="email" required>
+                    </div>
+
+                    <div class="form-group input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"> <i class="fa fa-building"></i> </span>
+                        </div>
+                        <select id="congregationSelection" class="form-control" required>
+                            <option disabled selected="" value="noSelection"> Select Congregation</option>
+                            
+                        </select>
+                    </div>
+
+                    <!-- Used for creating new congregation-->
+                    <div id="attachDiv">
+                        <div id ="newCongDiv"></div>
+                    </div>
+                    
+                    <script>
+                        //populate selection with existing congregations
+                        $.ajax({
+                            url: "http://localhost:8080/api/congregations",
+                            type: "GET",
+                            dataType: "json"
+                        }).done(function(data){
+                            var i;
+                            for(i = 0; i < data.length; i++){
+                                var o = new Option(data[i]["name"], data[i]["id"]);
+                                $(o).html(data[i]["name"]);
+                                $('#congregationSelection').append(o);
+                            }
+
+                            var o = new Option("Create New Congregation", "createCongregation");
+                            $(o).html("Create New Congregation");
+                            $('#congregationSelection').append(o);
+                        });
+
+                        //add handler on select change if create new congregation
+                            $('select').on('change', function () {
+                                if (this.value === "createCongregation") {
+                                    $("#attachDiv").attr("class", "form-group input-group");
+                                    $("#attachDiv").append(
+                                        `<div class="input-group-prepend">
+                                            <span class="input-group-text"> <i class="fa fa-building"></i> </span>
+                                        </div>
+                                        <input id="newCongInput" class="form-control" placeholder="New Congregation Name" type="text" required>`
+                                    );
+                                }
+                                else {
+                                    $("#attachDiv").attr("class", "");
+                                    $("#attachDiv").empty();
+                                }
+                            });
+                    </script>
+   
+                    <div class="form-group input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
+                        </div>
+                        <input id="passwordInput" class="form-control" placeholder="Create password" type="password" required>
+                    </div>
+
+                    <div class="form-group input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
+                        </div>
+                        <input id="passwordConfirmInput" class="form-control" placeholder="Repeat password" type="password" required>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary btn-block"> Create Account </button>
+                        <script>
+                            $('#registrationForm').submit(function (e) {
+                                e.preventDefault();
+
+                                //validate that passwords match
+                                var password = $("#passwordInput").val();
+                                var passwordConfirmation = $("#passwordConfirmInput").val();
+
+                                if (password !== passwordConfirmation) {
+                                    alert("Passwords must match");
+                                    return;
+                                }
+
+                                //check if chosen username already exists
+                                var username = $("#usernameInput").val();
+                                $.ajax({
+                                    url: "http://localhost:8080/api/user/username/" + username,
+                                    type: 'GET',
+                                    async: false
+                                }).done(function(data) {
+                                    if(data.id !== undefined){
+                                        alert("Username already exists. Please choose another username.")
+                                        return;
+                                    }
+                                })
+
+                                //check congregation selection
+                                var congId;
+                                if($('#congregationSelection').find(":selected").val() === "noSelection"){
+                                    alert("Please select a congregation");
+                                    return;
+                                }
+                                else if($('#congregationSelection').find(":selected").val() === "createCongregation"){
+                                    if($('#newCongInput').val() === null || $('#newCongInput').val().trim().length == 0){
+                                        alert("Please enter a congregation name");
+                                        return;
+                                    }
+
+                                    //create new congregation
+                                    var congregation = {
+                                        name: $("#newCongInput").val().trim()
+                                    };
+
+                                    $.ajax({
+                                        url: "http://localhost:8080/api/congregation",
+                                        type: 'POST',
+                                        dataType: 'json',
+                                        contentType: "application/json; charset=utf-8",
+                                        data: JSON.stringify(congregation),
+                                        async: false
+                                    }).done(function(data){
+                                        congId = data.id;
+                                    })
+                                }
+                                else{
+                                    congId = $('#congregationSelection').find(":selected").val()
+                                }
+
+                                var newAccount = {
+                                    username: username,
+                                    email: $("#emailInput").val(),
+                                    password: password
+                                };
+
+                                $.ajax({
+                                    url: "http://localhost:8080/api/congregation/" + congId + "/user",
+                                    type: 'POST',
+                                    contentType: "application/json; charset=utf-8",
+                                    dataType: 'json',
+                                    data: JSON.stringify(newAccount)
+                                }).done(function (data) {
+                                    //send creation email
+                                    var emailBody = "Hi " + $("#usernameInput").val() + ",\n\n" +
+                                    "This is a confirmation that you have created an account for the Assignment Scheduler with username " + $("#usernameInput").val() + "\n\n" +
+                                    "If you did not create an account, please disregard this email.\n\n" +
+                                    "Sincerely,\nAssignment Scheduler";
+
+                                    var emailRequest = {
+                                        body: emailBody,
+                                        recipient: $("#emailInput").val().trim(),
+                                        subject: "Assignment Scheduler - Account Creation"
+                                    }
+
+                                    $.ajax({
+                                        url: "http://localhost:8080/api/sendemail",
+                                        type: 'POST',
+                                        dataType: 'json',
+                                        contentType: "application/json; charset=utf-8",
+                                        data: JSON.stringify(emailRequest),
+                                        async: false
+                                    });
+
+                                    //create jwt 
+                                    var loginRequest = {
+                                        username: username,
+                                        password: password
+                                    }
+
+                                    $.ajax({
+                                        url: "http://localhost:8080/login",
+                                        type: 'POST',
+                                        dataType: 'json',
+                                        contentType: "application/json; charset=utf-8",
+                                        data: JSON.stringify(loginRequest)
+                                    }).always(function (response) {
+                                        if (response.status == 200) {
+                                            sessionStorage.setItem("jwt", response.responseText);
+                                            window.location.href = "/ui/home.html"
+                                        }
+                                    });
+                                });
+                            });
+                        </script>
+                    </div> 
+
+                    <p class="text-center">Already have an account? <a href="/ui/login.html" style="text-decoration: underline">Login here!</a> </p>
+                </form>
+                
+                <!-- Google Login (implement if have time)-->
+                <!--
+                <p class="divider-text">
+                    <span class="bg-light">OR</span>
+                </p>
+                <p>
+                    <a href="" class="btn btn-block btn-google"> <i class="fab fa-google"></i>   Login via Google</a>
+                </p>
+            -->
+            </article>
+        </div> 
+    
+        </div>
+    </body>
+
+</html>

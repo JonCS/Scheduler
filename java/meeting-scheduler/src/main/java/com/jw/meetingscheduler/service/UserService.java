@@ -9,7 +9,7 @@ public interface UserService {
 	
 	public User getUser(Long userId);
 	
-	public User createUser(User user);
+	public User createUser(User user, Long congregationId);
 	
 	public void modifyUser(Long userId, User user);
 	
