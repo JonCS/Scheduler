@@ -51,9 +51,11 @@ public class AuthController {
 		
 		String jwtToken = Jwts.builder()
 				.claim("roles", "user")
+				.claim("userId", user.getId())
 				.claim("username", username)
 				.claim("congId", user.getCongregation().getId())
 				.claim("congName", user.getCongregation().getName())
+				.claim("email", user.getEmail())
 				.setIssuedAt(issueTime)
 				.setExpiration(expTime)
 	            .signWith(SignatureAlgorithm.HS256, "secretkey")

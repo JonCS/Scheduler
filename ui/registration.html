@@ -167,6 +167,19 @@
                                         async: false
                                     }).done(function(data){
                                         congId = data.id;
+
+                                        //create email setting
+                                        var emailSetting = {
+                                            property: "emailFrequency",
+                                            value: 7
+                                        }
+                                        $.ajax({
+                                            url: "http://localhost:8080/api/congregation/" + congId + "/setting",
+                                            type: 'POST',
+                                            dataType: 'json',
+                                            contentType: "application/json; charset=utf-8",
+                                            data: JSON.stringify(emailSetting)
+                                        })
                                     })
                                 }
                                 else{
@@ -186,7 +199,8 @@
                                     dataType: 'json',
                                     data: JSON.stringify(newAccount)
                                 }).done(function (data) {
-                                    //send creation email
+
+                                    //send user account confirmation email
                                     var emailBody = "Hi " + $("#usernameInput").val() + ",\n\n" +
                                     "This is a confirmation that you have created an account for the Assignment Scheduler with username " + $("#usernameInput").val() + "\n\n" +
                                     "If you did not create an account, please disregard this email.\n\n" +
@@ -203,8 +217,7 @@
                                         type: 'POST',
                                         dataType: 'json',
                                         contentType: "application/json; charset=utf-8",
-                                        data: JSON.stringify(emailRequest),
-                                        async: false
+                                        data: JSON.stringify(emailRequest)
                                     });
 
                                     //create jwt 

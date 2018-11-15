@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService{
 			User existing = userRepository.findById(userId).get();
 			CustomUtils.copyProperties(user, existing);
 			
-			if(existing.getPassword() != null && existing.getPassword().length() > 0)
+			if(user.getPassword() != null && user.getPassword().length() > 0)
 				existing.setPassword(bcryptEncoder.encode(existing.getPassword())); 
 				
 			userRepository.saveAndFlush(existing);

@@ -18,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 //@DiscriminatorColumn(name="product_type", discriminatorType = DiscriminatorType.STRING)
-public class Assignment {
+public class Assignment implements Comparable<Assignment> {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -65,6 +65,21 @@ public class Assignment {
 
 	public void setDate(Date date) {
 		this.date = date;
+	}
+
+	@Override
+	public int compareTo(Assignment o) {
+		if(this.date.compareTo(o.date) != 0)
+			return this.date.compareTo(o.date);
+		
+		return this.assignmentType.compareTo(o.assignmentType);
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if(!(o instanceof Assignment))
+			return false;
+		return this.compareTo((Assignment)o) == 0;
 	}
 	
 }
