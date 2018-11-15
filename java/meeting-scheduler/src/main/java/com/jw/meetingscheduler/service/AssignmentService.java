@@ -36,4 +36,6 @@ public interface AssignmentService {
 
 	public AssignmentPublishersDto getAssignmentPublishers(Long assignmentId);
 	
+	public List<Assignment> getUpcomingCongregationAssignments(Long congregationId);
+	
 }

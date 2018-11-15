@@ -3,9 +3,12 @@ package com.jw.meetingscheduler.service;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +43,9 @@ public class AssignmentServiceImpl implements AssignmentService {
 		calendar.add(Calendar.DAY_OF_MONTH, dateRange * 2);
 		java.sql.Date endDate = CustomUtils.convertFromJAVADateToSQLDate(calendar.getTime());
 		
-		return new HashSet<Assignment>(assignmentRepository.getByPublisher_IdAndBetweenDates(publisherId, beginDate, endDate));
+		List<Assignment> result = assignmentRepository.getByPublisher_IdAndBetweenDates(publisherId, beginDate, endDate);
+		
+		return new TreeSet<Assignment>(result);
 	}
 	
 	@Override
@@ -203,5 +208,10 @@ public class AssignmentServiceImpl implements AssignmentService {
 			assignmentPublishersDto.setAssistant(((MinistrySchoolAssignment)assignment).getAssistant());
 			
 		return assignmentPublishersDto;
+	}
+
+	@Override
+	public List<Assignment> getUpcomingCongregationAssignments(Long congregationId) {
+		return assignmentRepository.getByCongregation_IdAndDateAfter(congregationId, CustomUtils.convertFromJAVADateToSQLDate(new java.util.Date()));
 	}
 }

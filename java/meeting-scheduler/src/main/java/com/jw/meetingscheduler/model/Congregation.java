@@ -31,6 +31,18 @@ public class Congregation {
 	@OneToMany(mappedBy = "congregation")
 	@JsonIgnore
 	private List<User> users;
+	
+	@OneToMany(mappedBy = "congregation")
+	@JsonIgnore
+	private List<Setting> settings;
+
+	public List<Setting> getSettings() {
+		return settings;
+	}
+
+	public void setSettings(List<Setting> settings) {
+		this.settings = settings;
+	}
 
 	public List<User> getUsers() {
 		return users;
