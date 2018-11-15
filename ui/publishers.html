@@ -175,19 +175,21 @@
 
           var currentDate = new Date();
           for(j = 0; j < assignments.length; j++){
-            if(new Date(assignments[j]["date"]) <= currentDate){
-              pastAssignments += "<b>" + new Date(assignments[j]["date"]).toLocaleDateString("en-US") + "</b><ul>" +
+            var d = new Date(assignments[j]["date"]);
+            var date = new Date(d.getTime() - d.getTimezoneOffset() * -60000);
+            if(date <= currentDate){
+              pastAssignments += "<b>" + date.toLocaleDateString("en-US") + "</b><ul>" +
                 "<li>" + assignments[j]["assignmentType"] + "</li></ul><br>";
 
-                if(mostRecentDate == null || new Date(assignments[j]["date"]) > mostRecentDate)
-                  mostRecentDate = new Date(assignments[j]["date"]);
+                if(mostRecentDate == null || date > mostRecentDate)
+                  mostRecentDate = date;
             }
             else{
-              futureAssignments += "<b>" + new Date(assignments[j]["date"]).toLocaleDateString("en-US") + "</b><ul>" +
+              futureAssignments += "<b>" + date.toLocaleDateString("en-US") + "</b><ul>" +
                 "<li>" + assignments[j]["assignmentType"] + "</li></ul><br>";
 
-              if(closestUpcomingDate == null || new Date(assignments[j]["date"]) < closestUpcomingDate)
-                  closestUpcomingDate = new Date(assignments[j]["date"]);
+              if(closestUpcomingDate == null || date < closestUpcomingDate)
+                  closestUpcomingDate = date;
             }
           }
 
@@ -196,10 +198,15 @@
           if(pastAssignments.length == 0)
             pastAssignments = "None";
 
-          if(mostRecentDate == null)
-            mostRecentDate = new Date(-100);
-          if(closestUpcomingDate == null)
-            closestUpcomingDate = new Date(100);
+          if(mostRecentDate == null){
+            mostRecentDate = new Date();
+            mostRecentDate.setDate(mostRecentDate.getDate() - 100000)
+          }
+          if(closestUpcomingDate == null){
+            closestUpcomingDate = new Date();
+            closestUpcomingDate.setDate(closestUpcomingDate.getDate() + 100000)
+          }
+            
 
           $("#tdPastAssignments" + data[i].id).append(pastAssignments);
           $("#tdPastAssignments" + data[i].id).attr("data-date", mostRecentDate);
@@ -485,16 +492,16 @@
               if (dir == "asc") {
                 switch (type) {
                   case 'recent assignments':
-                    x = rows[i].getElementsByTagName("TD")[4].getAttribute("data-date");
-                    y = rows[i + 1].getElementsByTagName("TD")[4].getAttribute("data-date");
+                    x = new Date(rows[i].getElementsByTagName("TD")[4].getAttribute("data-date"));
+                    y = new Date(rows[i + 1].getElementsByTagName("TD")[4].getAttribute("data-date"));
                     if(x > y){
                       shouldSwitch = true;
                     }
-                    console.log(x)
                     break;
                   case 'upcoming assignments':
-                    x = rows[i].getElementsByTagName("TD")[5].getAttribute("data-date");
-                    y = rows[i + 1].getElementsByTagName("TD")[5].getAttribute("data-date");
+                    x = new Date(rows[i].getElementsByTagName("TD")[5].getAttribute("data-date"));
+                    y = new Date(rows[i + 1].getElementsByTagName("TD")[5].getAttribute("data-date"));
+                    
                     if(x > y){
                       shouldSwitch = true;
                     }
@@ -539,15 +546,15 @@
               } else if (dir == "desc") {
                 switch (type) {
                   case 'recent assignments':
-                    x = rows[i].getElementsByTagName("TD")[4].getAttribute("data-date");
-                    y = rows[i + 1].getElementsByTagName("TD")[4].getAttribute("data-date");
+                    x = new Date(rows[i].getElementsByTagName("TD")[4].getAttribute("data-date"));
+                    y = new Date(rows[i + 1].getElementsByTagName("TD")[4].getAttribute("data-date"));
                     if(x < y){
                       shouldSwitch = true;
                     }
                     break;
                   case 'upcoming assignments':
-                    x = rows[i].getElementsByTagName("TD")[5].getAttribute("data-date");
-                    y = rows[i + 1].getElementsByTagName("TD")[5].getAttribute("data-date");
+                    x = new Date(rows[i].getElementsByTagName("TD")[5].getAttribute("data-date"));
+                    y = new Date(rows[i + 1].getElementsByTagName("TD")[5].getAttribute("data-date"));
                     if(x < y){
                       shouldSwitch = true;
                     }
