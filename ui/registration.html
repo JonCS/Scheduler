@@ -37,6 +37,18 @@
                 <form id="registrationForm">
                     <div class="form-group input-group">
                         <div class="input-group-prepend">
+                            <span class="input-group-text"> <i class="fa fa-user-circle"></i> </span>
+                        </div>
+                        <input id="firstNameInput" class="form-control" placeholder="First Name" type="text" required>
+                    </div>
+                    <div class="form-group input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"> <i class="fa fa-user-circle"></i> </span>
+                        </div>
+                        <input id="lastNameInput" class="form-control" placeholder="Last Name" type="text" required>
+                    </div>
+                    <div class="form-group input-group">
+                        <div class="input-group-prepend">
                             <span class="input-group-text"> <i class="fa fa-user"></i> </span>
                         </div>
                         <input id="usernameInput" class="form-control" placeholder="Username" type="text" required>
@@ -53,7 +65,7 @@
                             <span class="input-group-text"> <i class="fa fa-building"></i> </span>
                         </div>
                         <select id="congregationSelection" class="form-control" required>
-                            <option disabled selected="" value="noSelection"> Select Congregation</option>
+                            <option disabled selected="" value="noSelection"> Select Organization</option>
                             
                         </select>
                     </div>
@@ -77,8 +89,8 @@
                                 $('#congregationSelection').append(o);
                             }
 
-                            var o = new Option("Create New Congregation", "createCongregation");
-                            $(o).html("Create New Congregation");
+                            var o = new Option("Create New Organization", "createCongregation");
+                            $(o).html("Create New Organization");
                             $('#congregationSelection').append(o);
                         });
 
@@ -90,7 +102,7 @@
                                         `<div class="input-group-prepend">
                                             <span class="input-group-text"> <i class="fa fa-building"></i> </span>
                                         </div>
-                                        <input id="newCongInput" class="form-control" placeholder="New Congregation Name" type="text" required>`
+                                        <input id="newCongInput" class="form-control" placeholder="New Organization Name" type="text" required>`
                                     );
                                 }
                                 else {
@@ -185,6 +197,21 @@
                                 else{
                                     congId = $('#congregationSelection').find(":selected").val()
                                 }
+
+                                //create new publisher
+                                var publisher = {
+                                    firstName: $("#firstNameInput").val(),
+                                    lastName: $("#lastNameInput").val(),
+                                    email: $('#emailInput').val()
+                                };
+
+                                $.ajax({
+                                    url: "http://localhost:8080/api/congregation/" + congId + "/publisher",
+                                    type: "POST",
+                                    dataType: 'json',
+                                    contentType: "application/json; charset=utf-8",
+                                    data: JSON.stringify(publisher)
+                                });
 
                                 var newAccount = {
                                     username: username,
