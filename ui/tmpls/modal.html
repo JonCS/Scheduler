@@ -25,7 +25,7 @@
 			type: 'GET',
 			dataType: 'json'
 		}).done(function(data){
-			$('#event-modal-publisher').html("<li><h4>Publisher: " + data.publisher.firstName + " " + data.publisher.lastName + "<h4></li>");
+			$('#event-modal-publisher').html("<li><h4>Member: " + data.publisher.firstName + " " + data.publisher.lastName + "<h4></li>");
 			if(data.assistant !== null){
 				$('#event-modal-assistant').html("<li><h4>Assistant: " + data.assistant.firstName + " " + data.assistant.lastName + "<h4></li>");
 			}
